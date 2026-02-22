@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SightReading - 視譜練習</title>
+    <meta name="description" content="SightReading 視譜練習 — 鋼琴初學者的五線譜辨識訓練 APP。隨機音符、模擬鍵盤、限時挑戰、關卡模式。">
+    <meta name="apple-itunes-app" content="app-id=6743129507">
+    <link rel="icon" type="image/png" href="app-icon.png">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #1C1C2E;
+            --card: #2C2C3E;
+            --accent: #BF5AF2;
+            --accent2: #0A84FF;
+            --text: #f0f0f0;
+            --text2: #a8a6be;
+            --gradient: linear-gradient(135deg, #FF2D55, #BF5AF2, #0A84FF);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(28, 28, 46, 0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .nav-brand {
+            display: flex; align-items: center; gap: 10px;
+            text-decoration: none; color: var(--text);
+            font-weight: 600; font-size: 1.05rem;
+        }
+        .nav-brand img { width: 32px; height: 32px; border-radius: 8px; }
+
+        .nav-right { display: flex; align-items: center; gap: 24px; }
+
+        .nav-links { display: flex; gap: 24px; list-style: none; }
+        .nav-links a { color: var(--text2); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--text); }
+
+        .lang-switcher {
+            display: flex; gap: 4px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 8px; padding: 3px;
+        }
+        .lang-btn {
+            background: none; border: none; color: var(--text2);
+            font-size: 0.8rem; padding: 4px 10px; border-radius: 6px;
+            cursor: pointer; transition: all 0.2s; font-family: inherit;
+        }
+        .lang-btn:hover { color: var(--text); }
+        .lang-btn.active { background: var(--accent); color: white; }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 80px 24px 60px;
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute;
+            top: -40%; left: -20%; width: 80%; height: 80%;
+            background: radial-gradient(circle, rgba(191,90,242,0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .hero::after {
+            content: ''; position: absolute;
+            bottom: -30%; right: -20%; width: 70%; height: 70%;
+            background: radial-gradient(circle, rgba(10,132,255,0.12) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            max-width: 1100px;
+            display: flex; align-items: center; gap: 60px;
+            position: relative; z-index: 1;
+        }
+        .hero-text { flex: 1; min-width: 300px; }
+
+        .app-icon {
+            width: 80px; height: 80px; border-radius: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 24px rgba(191,90,242,0.3);
+        }
+        .hero-text h1 { font-size: 3rem; font-weight: 700; line-height: 1.15; margin-bottom: 8px; }
+        .hero-text h1 .gradient-text {
+            background: var(--gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-text .subtitle { font-size: 1.2rem; color: var(--text2); margin-bottom: 28px; }
+
+        .app-store-badge { display: inline-block; transition: transform 0.2s; }
+        .app-store-badge:hover { transform: scale(1.05); }
+        .app-store-badge img { height: 54px; }
+
+        /* Hero phone showcase — 3D perspective */
+        .hero-screenshots {
+            flex: 1; min-width: 0;
+            display: flex; gap: 20px;
+            justify-content: center; align-items: flex-end;
+            perspective: 1200px;
+        }
+
+        /* Slim iPhone frame */
+        .phone-frame {
+            position: relative;
+            background: #2a2a2c;
+            border-radius: 32px;
+            padding: 6px;
+            box-shadow:
+                0 0 0 1px #4a4a4e,
+                0 12px 48px rgba(0,0,0,0.45);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s;
+            will-change: transform;
+        }
+        .phone-frame::before {
+            content: '';
+            position: absolute;
+            top: 6px; left: 50%;
+            transform: translateX(-50%);
+            width: 60px; height: 18px;
+            background: #2a2a2c;
+            border-radius: 0 0 14px 14px;
+            z-index: 2;
+        }
+        .phone-frame img {
+            display: block; width: 100%;
+            border-radius: 26px;
+        }
+
+        .hero-screenshots .phone-frame { width: 200px; }
+
+        /* 3D idle tilt — staggered for each phone */
+        .hero-screenshots .phone-frame:first-child {
+            transform: rotateY(8deg) rotateX(2deg) translateY(0px);
+        }
+        .hero-screenshots .phone-frame:nth-child(2) {
+            transform: rotateY(-6deg) rotateX(-3deg) translateY(-24px);
+        }
+
+        /* Features */
+        .features { padding: 80px 24px; max-width: 1000px; margin: 0 auto; }
+        .features h2 { text-align: center; font-size: 2rem; margin-bottom: 48px; }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .feature-card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 28px;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(191,90,242,0.3);
+            box-shadow: 0 12px 32px rgba(191,90,242,0.1);
+        }
+        .feature-icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+        .feature-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+        .feature-card p { color: var(--text2); font-size: 0.95rem; }
+
+        /* Screenshots gallery — 3D fan layout */
+        .screenshots { padding: 80px 24px; text-align: center; }
+        .screenshots h2 { font-size: 2rem; margin-bottom: 48px; }
+
+        .screenshots-scroll {
+            display: flex; gap: 24px;
+            justify-content: center; flex-wrap: wrap;
+            perspective: 1400px;
+        }
+        .screenshots-scroll .phone-frame { width: 210px; }
+
+        /* Staggered 3D fan angles for gallery */
+        .screenshots-scroll .phone-frame:nth-child(1) { transform: rotateY(12deg) translateZ(20px); }
+        .screenshots-scroll .phone-frame:nth-child(2) { transform: rotateY(4deg) translateZ(40px) translateY(-12px); }
+        .screenshots-scroll .phone-frame:nth-child(3) { transform: rotateY(-4deg) translateZ(40px) translateY(-12px); }
+        .screenshots-scroll .phone-frame:nth-child(4) { transform: rotateY(-12deg) translateZ(20px); }
+
+        .screenshots-scroll .phone-frame:hover {
+            transform: rotateY(0deg) translateZ(60px) translateY(-16px) scale(1.04) !important;
+            box-shadow: 0 0 0 1px #4a4a4e, 0 24px 64px rgba(191,90,242,0.2);
+        }
+
+        /* Story */
+        .story { padding: 80px 24px; max-width: 700px; margin: 0 auto; }
+        .story h2 { font-size: 2rem; margin-bottom: 24px; text-align: center; }
+        .story p { color: var(--text2); font-size: 1.05rem; margin-bottom: 16px; }
+        .story .highlight {
+            color: var(--text);
+            background: linear-gradient(135deg, rgba(191,90,242,0.15), rgba(10,132,255,0.15));
+            border-left: 3px solid var(--accent);
+            padding: 16px 20px;
+            border-radius: 0 12px 12px 0;
+            margin: 24px 0;
+        }
+
+        /* Reviews */
+        .reviews { padding: 80px 24px; max-width: 1000px; margin: 0 auto; }
+        .reviews h2 { font-size: 2rem; margin-bottom: 12px; text-align: center; }
+        .reviews .reviews-subtitle { text-align: center; color: var(--text2); margin-bottom: 48px; font-size: 1rem; }
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .review-card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 24px;
+            transition: transform 0.3s, border-color 0.3s;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .review-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(191,90,242,0.2);
+        }
+        .review-stars { color: #FFD60A; font-size: 0.85rem; letter-spacing: 2px; }
+        .review-title { font-weight: 600; font-size: 1rem; }
+        .review-body { color: var(--text2); font-size: 0.9rem; line-height: 1.55; flex: 1; }
+        .review-meta { font-size: 0.75rem; color: rgba(168,166,190,0.6); }
+        .review-meta .review-region {
+            display: inline-block;
+            background: rgba(255,255,255,0.06);
+            padding: 2px 8px; border-radius: 4px;
+            margin-left: 4px;
+        }
+
+        /* Support */
+        .support { padding: 80px 24px; max-width: 700px; margin: 0 auto; }
+        .support h2 { font-size: 2rem; margin-bottom: 24px; text-align: center; }
+        .support-content {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 32px;
+        }
+        .support-content p { color: var(--text2); font-size: 1rem; margin-bottom: 16px; }
+        .support-content a { color: var(--accent); text-decoration: none; }
+        .support-content a:hover { text-decoration: underline; }
+        .support-email {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(191,90,242,0.1);
+            border: 1px solid rgba(191,90,242,0.3);
+            padding: 12px 20px; border-radius: 12px;
+            color: var(--accent); text-decoration: none;
+            font-weight: 500; transition: background 0.2s;
+        }
+        .support-email:hover { background: rgba(191,90,242,0.2); text-decoration: none; }
+
+        /* Privacy */
+        .privacy { padding: 40px 24px 80px; max-width: 700px; margin: 0 auto; }
+        .privacy h2 { font-size: 2rem; margin-bottom: 24px; text-align: center; }
+        .privacy-content {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 32px;
+            color: var(--text2); font-size: 0.95rem;
+        }
+        .privacy-content h3 { color: var(--text); font-size: 1.05rem; margin: 20px 0 8px; }
+        .privacy-content h3:first-child { margin-top: 0; }
+        .privacy-content p { margin-bottom: 12px; }
+
+        /* Footer */
+        footer {
+            text-align: center; padding: 40px 24px;
+            color: var(--text2); font-size: 0.85rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+
+        /* ========= Scroll-in 3D animations ========= */
+        @keyframes fadeUp3D {
+            from { opacity: 0; transform: perspective(800px) translateY(60px) rotateX(8deg); }
+            to { opacity: 1; transform: perspective(800px) translateY(0) rotateX(0); }
+        }
+        @keyframes slideInLeft3D {
+            from { opacity: 0; transform: perspective(800px) translateX(-80px) rotateY(12deg); }
+            to { opacity: 1; transform: perspective(800px) translateX(0) rotateY(0); }
+        }
+        @keyframes slideInRight3D {
+            from { opacity: 0; transform: perspective(800px) translateX(80px) rotateY(-12deg); }
+            to { opacity: 1; transform: perspective(800px) translateX(0) rotateY(0); }
+        }
+        @keyframes flipIn {
+            from { opacity: 0; transform: perspective(1000px) rotateY(-25deg) translateZ(-80px) scale(0.9); }
+            to { opacity: 1; transform: perspective(1000px) rotateY(0) translateZ(0) scale(1); }
+        }
+        @keyframes riseRotate {
+            from { opacity: 0; transform: perspective(800px) translateY(80px) rotateX(15deg) scale(0.92); }
+            to { opacity: 1; transform: perspective(800px) translateY(0) rotateX(0) scale(1); }
+        }
+
+        .anim { opacity: 0; }
+
+        .anim.visible {
+            opacity: 1 !important;
+            animation-fill-mode: both;
+            animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .anim.visible.fade-up-3d { animation: fadeUp3D 0.9s both cubic-bezier(0.22,1,0.36,1); }
+        .anim.visible.slide-left-3d { animation: slideInLeft3D 0.9s both cubic-bezier(0.22,1,0.36,1); }
+        .anim.visible.slide-right-3d { animation: slideInRight3D 0.9s both cubic-bezier(0.22,1,0.36,1); }
+        .anim.visible.flip-in { animation: flipIn 0.9s both cubic-bezier(0.22,1,0.36,1); }
+        .anim.visible.rise-rotate { animation: riseRotate 0.9s both cubic-bezier(0.22,1,0.36,1); }
+
+        /* Hero entrance — immediate, no scroll trigger */
+        .hero .app-icon,
+        .hero h1,
+        .hero .subtitle,
+        .hero .hero-badge,
+        .hero .app-store-badge,
+        .hero-screenshots .phone-frame {
+            opacity: 0;
+        }
+        .hero .app-icon { animation: riseRotate 0.7s 0.2s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .hero h1 { animation: fadeUp3D 0.8s 0.35s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .hero .subtitle { animation: fadeUp3D 0.8s 0.5s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .hero .hero-badge { animation: fadeUp3D 0.8s 0.57s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .hero .app-store-badge { animation: fadeUp3D 0.8s 0.65s cubic-bezier(0.22,1,0.36,1) forwards; }
+
+        @keyframes heroPhone1 {
+            from { opacity: 0; transform: perspective(1200px) rotateY(-30deg) translateX(100px) translateZ(-100px); }
+            to { opacity: 1; transform: perspective(1200px) rotateY(8deg) rotateX(2deg); }
+        }
+        @keyframes heroPhone2 {
+            from { opacity: 0; transform: perspective(1200px) rotateY(-40deg) translateX(120px) translateZ(-120px); }
+            to { opacity: 1; transform: perspective(1200px) rotateY(-6deg) rotateX(-3deg) translateY(-24px); }
+        }
+        .hero-screenshots .phone-frame:first-child { animation: heroPhone1 1s 0.5s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .hero-screenshots .phone-frame:nth-child(2) { animation: heroPhone2 1s 0.7s cubic-bezier(0.22,1,0.36,1) forwards; }
+
+        /* After flip-in finishes, restore fan tilt — !important to override animation fill */
+        .screenshots-scroll .phone-frame.settled:nth-child(1) { animation: none !important; opacity: 1 !important; transform: rotateY(12deg) translateZ(20px); transition: transform 0.4s; }
+        .screenshots-scroll .phone-frame.settled:nth-child(2) { animation: none !important; opacity: 1 !important; transform: rotateY(4deg) translateZ(40px) translateY(-12px); transition: transform 0.4s; }
+        .screenshots-scroll .phone-frame.settled:nth-child(3) { animation: none !important; opacity: 1 !important; transform: rotateY(-4deg) translateZ(40px) translateY(-12px); transition: transform 0.4s; }
+        .screenshots-scroll .phone-frame.settled:nth-child(4) { animation: none !important; opacity: 1 !important; transform: rotateY(-12deg) translateZ(20px); transition: transform 0.4s; }
+
+        /* i18n */
+        [data-i18n] { display: none; }
+        [data-i18n].active { display: unset; }
+        h1 [data-i18n].active, h2 [data-i18n].active, h3 [data-i18n].active { display: inline; }
+        p [data-i18n].active { display: inline; }
+        .subtitle [data-i18n].active { display: inline; }
+        div[data-i18n].active { display: block; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-inner { flex-direction: column; text-align: center; gap: 40px; }
+            .hero-text h1 { font-size: 2.2rem; }
+            .hero-screenshots .phone-frame { width: 150px; border-radius: 24px; padding: 5px; }
+            .hero-screenshots .phone-frame::before { width: 44px; height: 14px; top: 5px; border-radius: 0 0 10px 10px; }
+            .hero-screenshots .phone-frame img { border-radius: 19px; }
+            .screenshots-scroll .phone-frame { width: 160px; border-radius: 24px; padding: 5px; }
+            .screenshots-scroll .phone-frame::before { width: 44px; height: 14px; top: 5px; border-radius: 0 0 10px 10px; }
+            .screenshots-scroll .phone-frame img { border-radius: 19px; }
+            .nav-links { display: none; }
+            /* Flatten 3D on mobile */
+            .screenshots-scroll .phone-frame:nth-child(1),
+            .screenshots-scroll .phone-frame:nth-child(2),
+            .screenshots-scroll .phone-frame:nth-child(3),
+            .screenshots-scroll .phone-frame:nth-child(4),
+            .screenshots-scroll .phone-frame.settled:nth-child(1),
+            .screenshots-scroll .phone-frame.settled:nth-child(2),
+            .screenshots-scroll .phone-frame.settled:nth-child(3),
+            .screenshots-scroll .phone-frame.settled:nth-child(4) {
+                transform: none !important;
+            }
+        }
+        @media (max-width: 480px) {
+            .hero-screenshots .phone-frame { width: 120px; border-radius: 20px; padding: 4px; }
+            .hero-screenshots .phone-frame::before { width: 36px; height: 12px; top: 4px; border-radius: 0 0 8px 8px; }
+            .hero-screenshots .phone-frame img { border-radius: 16px; }
+            .screenshots-scroll .phone-frame { width: 140px; border-radius: 20px; padding: 4px; }
+            .screenshots-scroll .phone-frame::before { width: 36px; height: 12px; top: 4px; border-radius: 0 0 8px 8px; }
+            .screenshots-scroll .phone-frame img { border-radius: 16px; }
+            .hero-text h1 { font-size: 1.8rem; }
+        }
+
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="#" class="nav-brand">
+        <img src="app-icon.png" alt="SightReading"> SightReading
+    </a>
+    <div class="nav-right">
+        <ul class="nav-links">
+            <li><a href="#features"><span data-i18n="zh-Hant" class="active">功能</span><span data-i18n="zh-Hans">功能</span><span data-i18n="en">Features</span></a></li>
+            <li><a href="#screenshots"><span data-i18n="zh-Hant" class="active">截圖</span><span data-i18n="zh-Hans">截图</span><span data-i18n="en">Screenshots</span></a></li>
+            <li><a href="#reviews"><span data-i18n="zh-Hant" class="active">評論</span><span data-i18n="zh-Hans">评论</span><span data-i18n="en">Reviews</span></a></li>
+            <li><a href="#story"><span data-i18n="zh-Hant" class="active">故事</span><span data-i18n="zh-Hans">故事</span><span data-i18n="en">Story</span></a></li>
+            <li><a href="#support"><span data-i18n="zh-Hant" class="active">支援</span><span data-i18n="zh-Hans">支持</span><span data-i18n="en">Support</span></a></li>
+            <li><a href="#privacy"><span data-i18n="zh-Hant" class="active">隱私</span><span data-i18n="zh-Hans">隐私</span><span data-i18n="en">Privacy</span></a></li>
+        </ul>
+        <div class="lang-switcher">
+            <button class="lang-btn active" data-lang="zh-Hant">繁中</button>
+            <button class="lang-btn" data-lang="zh-Hans">简中</button>
+            <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="hero-section">
+    <div class="hero-inner">
+        <div class="hero-text">
+            <img src="app-icon.png" alt="SightReading App Icon" class="app-icon">
+            <h1>
+                <span class="gradient-text">SightReading</span><br>
+                <span data-i18n="zh-Hant" class="active">視譜練習</span>
+                <span data-i18n="zh-Hans">视谱练习</span>
+                <span data-i18n="en">Sight Reading Trainer</span>
+            </h1>
+            <p class="subtitle">
+                <span data-i18n="zh-Hant" class="active">每天 3 分鐘，讓你從看不懂五線譜到快速辨認每個音符。</span>
+                <span data-i18n="zh-Hans">每天 3 分钟，让你从看不懂五线谱到快速辨认每个音符。</span>
+                <span data-i18n="en">3 minutes a day to go from staring at sheet music to instantly reading every note.</span>
+            </p>
+            <div class="hero-badge" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:6px 16px;margin-bottom:20px;font-size:0.9rem;">
+                <span style="color:#FFD60A;letter-spacing:1px;">★★★★★</span>
+                <span style="color:var(--text2);">
+                    <span data-i18n="zh-Hant" class="active">App Store 100+ 則五星好評</span>
+                    <span data-i18n="zh-Hans">App Store 100+ 条五星好评</span>
+                    <span data-i18n="en">100+ Five-Star Reviews on App Store</span>
+                </span>
+            </div><br>
+            <a href="https://apps.apple.com/app/id6743129507" class="app-store-badge">
+                <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store">
+            </a>
+        </div>
+        <div class="hero-screenshots" id="hero-phones">
+            <div class="phone-frame"><img src="screenshot-practice.png" alt="Practice Mode"></div>
+            <div class="phone-frame"><img src="screenshot-challenge.png" alt="Challenge Mode"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="features" id="features">
+    <h2 class="anim fade-up-3d">
+        <span data-i18n="zh-Hant" class="active">功能特色</span>
+        <span data-i18n="zh-Hans">功能特色</span>
+        <span data-i18n="en">Features</span>
+    </h2>
+    <div class="features-grid">
+        <div class="feature-card anim fade-up-3d" data-delay="0">
+            <span class="feature-icon">🎵</span>
+            <h3><span data-i18n="zh-Hant" class="active">隨機音符練習</span><span data-i18n="zh-Hans">随机音符练习</span><span data-i18n="en">Random Note Practice</span></h3>
+            <p><span data-i18n="zh-Hant" class="active">五線譜隨機顯示音符，支援高音譜號、低音譜號、大譜表，無限練習不間斷。</span><span data-i18n="zh-Hans">五线谱随机显示音符，支持高音谱号、低音谱号、大谱表，无限练习不间断。</span><span data-i18n="en">Staff displays random notes for treble clef, bass clef, or grand staff. Practice recognizing notes endlessly.</span></p>
+        </div>
+        <div class="feature-card anim fade-up-3d" data-delay="100">
+            <span class="feature-icon">🎹</span>
+            <h3><span data-i18n="zh-Hant" class="active">模擬鋼琴鍵盤</span><span data-i18n="zh-Hans">模拟钢琴键盘</span><span data-i18n="en">Piano Keyboard</span></h3>
+            <p><span data-i18n="zh-Hant" class="active">螢幕上的鋼琴鍵盤搭配即時合成琴音，按下琴鍵即可聽到對應音高。</span><span data-i18n="zh-Hans">屏幕上的钢琴键盘搭配即时合成琴音，按下琴键即可听到对应音高。</span><span data-i18n="en">On-screen piano keyboard with real-time synthesized sound. Hear the note as you answer.</span></p>
+        </div>
+        <div class="feature-card anim fade-up-3d" data-delay="200">
+            <span class="feature-icon">🏆</span>
+            <h3><span data-i18n="zh-Hant" class="active">關卡模式</span><span data-i18n="zh-Hans">关卡模式</span><span data-i18n="en">Level Mode</span></h3>
+            <p><span data-i18n="zh-Hant" class="active">從入門到大師，逐步提升難度，需達到指定正確率才能晉級下一關。</span><span data-i18n="zh-Hans">从入门到大师，逐步提升难度，需达到指定正确率才能晋级下一关。</span><span data-i18n="en">Start easy, level up as you improve. Each stage builds your confidence with clear accuracy goals.</span></p>
+        </div>
+        <div class="feature-card anim slide-right-3d" data-delay="0">
+            <span class="feature-icon">⏱</span>
+            <h3><span data-i18n="zh-Hant" class="active">限時挑戰</span><span data-i18n="zh-Hans">限时挑战</span><span data-i18n="en">Timed Challenge</span></h3>
+            <p><span data-i18n="zh-Hant" class="active">和時間賽跑！在 30、60 或 120 秒內，看你能答對幾題。</span><span data-i18n="zh-Hans">和时间赛跑！在 30、60 或 120 秒内，看你能答对几题。</span><span data-i18n="en">Race against the clock. How many notes can you identify in 30, 60, or 120 seconds?</span></p>
+        </div>
+        <div class="feature-card anim slide-right-3d" data-delay="100">
+            <span class="feature-icon">📊</span>
+            <h3><span data-i18n="zh-Hant" class="active">成績統計</span><span data-i18n="zh-Hans">成绩统计</span><span data-i18n="en">Statistics</span></h3>
+            <p><span data-i18n="zh-Hant" class="active">追蹤正確率、答題總數與進步趨勢，用數據見證你的成長。</span><span data-i18n="zh-Hans">追踪正确率、答题总数与进步趋势，用数据见证你的成长。</span><span data-i18n="en">Track your correct rate, total questions, and improvement over time with detailed charts.</span></p>
+        </div>
+        <div class="feature-card anim slide-right-3d" data-delay="200">
+            <span class="feature-icon">🎨</span>
+            <h3><span data-i18n="zh-Hant" class="active">11 款主題配色</span><span data-i18n="zh-Hans">11 款主题配色</span><span data-i18n="en">11 Color Themes</span></h3>
+            <p><span data-i18n="zh-Hant" class="active">從經典深色到櫻花粉、海洋藍、極光紫⋯⋯打造專屬你的練習風格。</span><span data-i18n="zh-Hans">从经典深色到樱花粉、海洋蓝、极光紫⋯⋯打造专属你的练习风格。</span><span data-i18n="en">From classic Dark to vibrant Sakura, Ocean, Aurora, and more. Make it yours.</span></p>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section style="padding:40px 24px 60px;max-width:700px;margin:0 auto;text-align:center;">
+    <h2 class="anim fade-up-3d" style="font-size:2rem;margin-bottom:40px;">
+        <span data-i18n="zh-Hant" class="active">三步開始練習</span>
+        <span data-i18n="zh-Hans">三步开始练习</span>
+        <span data-i18n="en">3 Steps to Get Started</span>
+    </h2>
+    <div style="display:flex;justify-content:center;gap:40px;flex-wrap:wrap;">
+        <div class="anim fade-up-3d" data-delay="0" style="flex:1;min-width:180px;max-width:220px;">
+            <div style="font-size:2.5rem;margin-bottom:8px;">1</div>
+            <h3 style="font-size:1rem;margin-bottom:4px;">
+                <span data-i18n="zh-Hant" class="active">看音符</span>
+                <span data-i18n="zh-Hans">看音符</span>
+                <span data-i18n="en">See the Note</span>
+            </h3>
+            <p style="color:var(--text2);font-size:0.9rem;">
+                <span data-i18n="zh-Hant" class="active">五線譜隨機出現一個音符</span>
+                <span data-i18n="zh-Hans">五线谱随机出现一个音符</span>
+                <span data-i18n="en">A random note appears on the staff</span>
+            </p>
+        </div>
+        <div class="anim fade-up-3d" data-delay="150" style="flex:1;min-width:180px;max-width:220px;">
+            <div style="font-size:2.5rem;margin-bottom:8px;">2</div>
+            <h3 style="font-size:1rem;margin-bottom:4px;">
+                <span data-i18n="zh-Hant" class="active">按琴鍵</span>
+                <span data-i18n="zh-Hans">按琴键</span>
+                <span data-i18n="en">Press the Key</span>
+            </h3>
+            <p style="color:var(--text2);font-size:0.9rem;">
+                <span data-i18n="zh-Hant" class="active">在螢幕鍵盤上點擊你的答案</span>
+                <span data-i18n="zh-Hans">在屏幕键盘上点击你的答案</span>
+                <span data-i18n="en">Tap your answer on the on-screen keyboard</span>
+            </p>
+        </div>
+        <div class="anim fade-up-3d" data-delay="300" style="flex:1;min-width:180px;max-width:220px;">
+            <div style="font-size:2.5rem;margin-bottom:8px;">3</div>
+            <h3 style="font-size:1rem;margin-bottom:4px;">
+                <span data-i18n="zh-Hant" class="active">反覆進步</span>
+                <span data-i18n="zh-Hans">反复进步</span>
+                <span data-i18n="en">Improve Daily</span>
+            </h3>
+            <p style="color:var(--text2);font-size:0.9rem;">
+                <span data-i18n="zh-Hant" class="active">每天練習幾分鐘，視譜能力快速成長</span>
+                <span data-i18n="zh-Hans">每天练习几分钟，视谱能力快速成长</span>
+                <span data-i18n="en">A few minutes daily, rapid progress over time</span>
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Mid-page CTA -->
+<div style="text-align:center;padding:20px 24px 60px;">
+    <a href="https://apps.apple.com/app/id6743129507" class="app-store-badge anim fade-up-3d">
+        <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store">
+    </a>
+</div>
+
+<!-- Screenshots -->
+<section class="screenshots" id="screenshots">
+    <h2 class="anim fade-up-3d">
+        <span data-i18n="zh-Hant" class="active">App 截圖</span>
+        <span data-i18n="zh-Hans">App 截图</span>
+        <span data-i18n="en">Screenshots</span>
+    </h2>
+    <div class="screenshots-scroll" id="gallery">
+        <div class="phone-frame anim flip-in" data-delay="0" style="--d:0ms">
+            <img src="screenshot-practice.png" alt="Practice" loading="lazy">
+        </div>
+        <div class="phone-frame anim flip-in" data-delay="150" style="--d:150ms">
+            <img src="screenshot-challenge.png" alt="Challenge" loading="lazy">
+        </div>
+        <div class="phone-frame anim flip-in" data-delay="300" style="--d:300ms">
+            <img src="screenshot-statistics.png" alt="Statistics" loading="lazy">
+        </div>
+        <div class="phone-frame anim flip-in" data-delay="450" style="--d:450ms">
+            <img src="screenshot-settings.png" alt="Settings" loading="lazy">
+        </div>
+    </div>
+</section>
+
+<!-- Reviews -->
+<section class="reviews" id="reviews">
+    <h2 class="anim fade-up-3d">
+        <span data-i18n="zh-Hant" class="active">使用者評論</span>
+        <span data-i18n="zh-Hans">用户评论</span>
+        <span data-i18n="en">User Reviews</span>
+    </h2>
+    <div class="reviews-aggregate anim fade-up-3d" data-delay="100" style="text-align:center;margin-bottom:40px;">
+        <div style="font-size:3rem;font-weight:700;line-height:1;">4.8</div>
+        <div style="color:#FFD60A;font-size:1.2rem;letter-spacing:2px;margin:4px 0;">★★★★★</div>
+        <div style="color:var(--text2);font-size:0.95rem;">
+            <span data-i18n="zh-Hant" class="active">App Store 100+ 則評分</span>
+            <span data-i18n="zh-Hans">App Store 100+ 条评分</span>
+            <span data-i18n="en">100+ Ratings on App Store</span>
+        </div>
+    </div>
+    <div class="anim fade-up-3d" data-delay="150" style="max-width:600px;margin:0 auto 40px;text-align:center;font-size:1.25rem;font-style:italic;color:var(--text);line-height:1.6;">
+        <span data-i18n="zh-Hant" class="active">"练习2年半，从看乐谱天书到喝茶一样简单。"</span>
+        <span data-i18n="zh-Hans">"练习2年半，从看乐谱天书到喝茶一样简单。"</span>
+        <span data-i18n="en">"After 2.5 years of practice, reading sheet music went from impossible to effortless."</span>
+    </div>
+    <div class="reviews-grid">
+
+        <div class="review-card anim slide-left-3d" data-delay="0">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-title">最强的识谱软件，没有之一</div>
+            <div class="review-body">练习2年半，从看乐谱天书到喝茶一样简单，提升效率非常高。</div>
+            <div class="review-meta">冰花椒 · 2023 <span class="review-region">CN</span></div>
+        </div>
+
+        <div class="review-card anim fade-up-3d" data-delay="100">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-title">感谢分享</div>
+            <div class="review-body">我作为业余爱好者，这个软件帮我快速训练了高音谱！发现它还可以切换低音，真的不要太感人好吗！无比良心的软件！</div>
+            <div class="review-meta">Taylor Rizzles · 2024 <span class="review-region">CN</span></div>
+        </div>
+
+        <div class="review-card anim slide-right-3d" data-delay="200">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-title">Super nice!</div>
+            <div class="review-body">I tried many sight reading apps for iPhone and iPad. For most casual "game" type of reading this one is the nicest and most fun to use.</div>
+            <div class="review-meta">Rabert · 2020 <span class="review-region">SE</span></div>
+        </div>
+
+        <div class="review-card anim slide-left-3d" data-delay="100">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-title">太良心了</div>
+            <div class="review-body">无广告轻量简洁，要是五线谱的色调主题能换的话就更好了</div>
+            <div class="review-meta">sixgog · 2023 <span class="review-region">CN</span></div>
+        </div>
+
+        <div class="review-card anim fade-up-3d" data-delay="200">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-title">很有幫助！</div>
+            <div class="review-body">我也是自學鋼琴。這個免費的App幫助我記住五線譜和小豆芽！相信我很快就可以擺脫這個App — 因為我可以快速讀譜了！</div>
+            <div class="review-meta">Lily Pine · 2022 <span class="review-region">US</span></div>
+        </div>
+
+        <div class="review-card anim slide-right-3d" data-delay="300">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-title">Simple but effective</div>
+            <div class="review-body">Learning to remember notes visually, one note at a time. I love simplicity of application, exercising for a few minutes everyday and my instincts are only getting better.</div>
+            <div class="review-meta">Ch3shie · 2023 <span class="review-region">PL</span></div>
+        </div>
+
+        <div class="review-card anim slide-left-3d" data-delay="200">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-title">良心app</div>
+            <div class="review-body">试了很多APP，觉得这个最好用，简单高效。正向反馈的数字累加，对孩子建立自信心很有帮助。已经分享给很多的朋友了！</div>
+            <div class="review-meta">gdajk · 2022 <span class="review-region">CN</span></div>
+        </div>
+
+        <div class="review-card anim fade-up-3d" data-delay="300">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-title">初学者识谱福音</div>
+            <div class="review-body">刚开始记不住五线谱的时候，到处找，用了好多种，最后找到这个。哈哈哈，太开心了。</div>
+            <div class="review-meta">墨丫 · 2025 <span class="review-region">CN</span></div>
+        </div>
+
+        <div class="review-card anim slide-right-3d" data-delay="400">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-title">很棒的軟體</div>
+            <div class="review-body">Very friendly to 剛接觸音樂的人</div>
+            <div class="review-meta">masaokchou · 2025 <span class="review-region">TW</span></div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Story -->
+<section class="story" id="story">
+    <h2 class="anim fade-up-3d">
+        <span data-i18n="zh-Hant" class="active">開發故事</span>
+        <span data-i18n="zh-Hans">开发故事</span>
+        <span data-i18n="en">Our Story</span>
+    </h2>
+    <div data-i18n="zh-Hant" class="active anim slide-left-3d" data-delay="100">
+        <p>為了圓小時候未完成的鋼琴夢想，利用下班時間請家教到家裡教我古典鋼琴。</p>
+        <p>對於初學者來說，最困難的就是看到五線譜上的音符能馬上認出是什麼音。老師會在五線譜練習本上隨機畫音符，讓我課餘練習。</p>
+        <div class="highlight">我突然想到：是不是可以把這樣的練習變成手機 APP？一來讓老師不用費心手繪音符，二來也省下買練習本的錢。</div>
+        <p>這就是 <strong>SightReading</strong> 的由來 — 一個從真實需求出發的小工具，讓視譜練習隨時隨地都能進行。</p>
+        <p style="margin-top:20px;color:var(--text);font-weight:500;">十多年來，超過數萬名使用者和我們一起練習視譜。希望這個小工具也能幫到你。</p>
+    </div>
+    <div data-i18n="zh-Hans" class="anim slide-left-3d" data-delay="100">
+        <p>为了圆小时候未完成的钢琴梦想，利用下班时间请家教到家里教我古典钢琴。</p>
+        <p>对于初学者来说，最困难的就是看到五线谱上的音符能马上认出是什么音。老师会在五线谱练习本上随机画音符，让我课余练习。</p>
+        <div class="highlight">我突然想到：是不是可以把这样的练习变成手机 APP？一来让老师不用费心手绘音符，二来也省下买练习本的钱。</div>
+        <p>这就是 <strong>SightReading</strong> 的由来 — 一个从真实需求出发的小工具，让视谱练习随时随地都能进行。</p>
+        <p style="margin-top:20px;color:var(--text);font-weight:500;">十多年来，超过数万名用户和我们一起练习视谱。希望这个小工具也能帮到你。</p>
+    </div>
+    <div data-i18n="en" class="anim slide-left-3d" data-delay="100">
+        <p>I've always dreamed of playing the piano. As an adult, I finally started taking classical piano lessons after work.</p>
+        <p>The hardest part for a beginner? Instantly recognizing notes on a staff. My teacher would hand-draw random notes in a manuscript book for me to practice between lessons.</p>
+        <div class="highlight">That's when it hit me — why not turn this into an app? It saves the teacher time drawing notes, and the student money buying practice books.</div>
+        <p>That's how <strong>SightReading</strong> was born — a simple tool built from a real need, designed to make sight-reading practice accessible anytime, anywhere.</p>
+        <p style="margin-top:20px;color:var(--text);font-weight:500;">Over the past decade, tens of thousands of users have practiced with us. We hope this little tool helps you too.</p>
+    </div>
+</section>
+
+<!-- Final CTA -->
+<section style="text-align:center;padding:60px 24px 80px;">
+    <h2 class="anim fade-up-3d" style="font-size:1.8rem;margin-bottom:8px;">
+        <span data-i18n="zh-Hant" class="active">開始你的視譜練習之旅</span>
+        <span data-i18n="zh-Hans">开始你的视谱练习之旅</span>
+        <span data-i18n="en">Start Your Sight-Reading Journey</span>
+    </h2>
+    <p class="anim fade-up-3d" data-delay="100" style="color:var(--text2);margin-bottom:24px;font-size:1.05rem;">
+        <span data-i18n="zh-Hant" class="active">完全免費，現在就下載。</span>
+        <span data-i18n="zh-Hans">完全免费，现在就下载。</span>
+        <span data-i18n="en">Completely free. Download now.</span>
+    </p>
+    <a href="https://apps.apple.com/app/id6743129507" class="app-store-badge anim fade-up-3d" data-delay="200">
+        <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store">
+    </a>
+</section>
+
+<!-- Support -->
+<section class="support" id="support">
+    <h2 class="anim fade-up-3d">
+        <span data-i18n="zh-Hant" class="active">支援與回饋</span>
+        <span data-i18n="zh-Hans">支持与反馈</span>
+        <span data-i18n="en">Support</span>
+    </h2>
+    <div class="support-content anim rise-rotate" data-delay="150">
+        <p>
+            <span data-i18n="zh-Hant" class="active">遇到問題或有任何建議？歡迎來信告訴我們，我們會盡快回覆。</span>
+            <span data-i18n="zh-Hans">遇到问题或有任何建议？欢迎来信告诉我们，我们会尽快回复。</span>
+            <span data-i18n="en">Having trouble or have a suggestion? We'd love to hear from you. Send us an email and we'll get back to you as soon as possible.</span>
+        </p>
+        <a href="mailto:aircon.chen@gmail.com?subject=SightReading%20Feedback" class="support-email">
+            ✉️ aircon.chen@gmail.com
+        </a>
+    </div>
+</section>
+
+<!-- Privacy -->
+<section class="privacy" id="privacy">
+    <h2 class="anim fade-up-3d">
+        <span data-i18n="zh-Hant" class="active">隱私權政策</span>
+        <span data-i18n="zh-Hans">隐私政策</span>
+        <span data-i18n="en">Privacy Policy</span>
+    </h2>
+    <div class="privacy-content anim fade-up-3d" data-i18n="zh-Hant" data-delay="150" style="display:block">
+        <p><em>最後更新：2026 年 2 月 22 日</em></p>
+        <h3>概述</h3><p>SightReading（以下簡稱「本 App」）重視您的隱私。本政策說明本 App 蒐集的資料及其用途。</p>
+        <h3>資料蒐集</h3><p>本 App <strong>不會</strong>蒐集、儲存或傳輸任何個人資料。您的練習設定、分數及統計資料僅儲存於您的裝置本機。</p>
+        <h3>第三方服務</h3><p>本 App 使用 Google AdMob 顯示廣告。AdMob 可能會蒐集部分裝置資訊（如廣告識別碼、IP 位址）以投放相關廣告。詳情請參閱 <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google 隱私權政策</a>。</p>
+        <h3>資料分享</h3><p>除上述說明外，我們不會向任何第三方出售、交易或分享您的個人資訊。</p>
+        <h3>兒童隱私</h3><p>本 App 不會故意蒐集 13 歲以下兒童的個人資訊。</p>
+        <h3>政策變更</h3><p>我們可能不定期更新本隱私權政策，變更內容將公布於本頁面。</p>
+        <h3>聯絡我們</h3><p>如對本隱私權政策有任何疑問，請來信 <a href="mailto:aircon.chen@gmail.com">aircon.chen@gmail.com</a>。</p>
+    </div>
+    <div class="privacy-content anim fade-up-3d" data-i18n="zh-Hans" data-delay="150">
+        <p><em>最后更新：2026 年 2 月 22 日</em></p>
+        <h3>概述</h3><p>SightReading（以下简称"本 App"）重视您的隐私。本政策说明本 App 收集的数据及其用途。</p>
+        <h3>数据收集</h3><p>本 App <strong>不会</strong>收集、存储或传输任何个人数据。您的练习设置、分数及统计数据仅存储于您的设备本地。</p>
+        <h3>第三方服务</h3><p>本 App 使用 Google AdMob 显示广告。AdMob 可能会收集部分设备信息（如广告标识符、IP 地址）以投放相关广告。详情请参阅 <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google 隐私政策</a>。</p>
+        <h3>数据分享</h3><p>除上述说明外，我们不会向任何第三方出售、交易或分享您的个人信息。</p>
+        <h3>儿童隐私</h3><p>本 App 不会故意收集 13 岁以下儿童的个人信息。</p>
+        <h3>政策变更</h3><p>我们可能不定期更新本隐私政策，变更内容将公布于本页面。</p>
+        <h3>联系我们</h3><p>如对本隐私政策有任何疑问，请来信 <a href="mailto:aircon.chen@gmail.com">aircon.chen@gmail.com</a>。</p>
+    </div>
+    <div class="privacy-content anim fade-up-3d" data-i18n="en" data-delay="150">
+        <p><em>Last updated: February 22, 2026</em></p>
+        <h3>Overview</h3><p>SightReading ("the App") is committed to protecting your privacy. This policy explains what data the App collects and how it is used.</p>
+        <h3>Data We Collect</h3><p>The App does <strong>not</strong> collect, store, or transmit any personal data. All your practice settings, scores, and statistics are stored locally on your device only.</p>
+        <h3>Third-Party Services</h3><p>The App uses Google AdMob to display advertisements. AdMob may collect certain device information (such as advertising identifier and IP address) to serve relevant ads. For details, please refer to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>.</p>
+        <h3>Data Sharing</h3><p>We do not sell, trade, or share your personal information with any third parties beyond what is described above.</p>
+        <h3>Children's Privacy</h3><p>The App does not knowingly collect personal information from children under 13.</p>
+        <h3>Changes</h3><p>We may update this Privacy Policy from time to time. Changes will be posted on this page.</p>
+        <h3>Contact</h3><p>If you have questions about this Privacy Policy, please contact us at <a href="mailto:aircon.chen@gmail.com">aircon.chen@gmail.com</a>.</p>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2026 SightReading. All rights reserved.</p>
+    <p style="margin-top: 8px;">
+        <a href="https://apps.apple.com/app/id6743129507">App Store</a> &middot;
+        <a href="#support"><span data-i18n="zh-Hant" class="active">支援</span><span data-i18n="zh-Hans">支持</span><span data-i18n="en">Support</span></a> &middot;
+        <a href="#privacy"><span data-i18n="zh-Hant" class="active">隱私權政策</span><span data-i18n="zh-Hans">隐私政策</span><span data-i18n="en">Privacy Policy</span></a>
+    </p>
+</footer>
+
+<script>
+// === i18n ===
+(function() {
+    var KEY = 'sr-lang';
+    function setLang(lang) {
+        document.querySelectorAll('[data-i18n]').forEach(function(el) {
+            var match = el.getAttribute('data-i18n') === lang;
+            el.classList.toggle('active', match);
+            if (el.classList.contains('privacy-content')) el.style.display = match ? 'block' : 'none';
+        });
+        document.querySelectorAll('.lang-btn').forEach(function(b) {
+            b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+        });
+        document.documentElement.lang = lang === 'en' ? 'en' : lang;
+        try { localStorage.setItem(KEY, lang); } catch(e) {}
+    }
+    function detect() {
+        try { var s = localStorage.getItem(KEY); if (s) return s; } catch(e) {}
+        var b = (navigator.language || '').toLowerCase();
+        if (b.indexOf('zh') === 0) {
+            return (b.indexOf('cn') !== -1 || b.indexOf('sg') !== -1 || b === 'zh-hans') ? 'zh-Hans' : 'zh-Hant';
+        }
+        return 'en';
+    }
+    setLang(detect());
+    document.querySelectorAll('.lang-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() { setLang(this.getAttribute('data-lang')); });
+    });
+})();
+
+// === Scroll-triggered animations ===
+(function() {
+    var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+            if (!e.isIntersecting) return;
+            var el = e.target;
+            var d = parseInt(el.getAttribute('data-delay') || '0', 10);
+            setTimeout(function() { el.classList.add('visible'); }, d);
+            // For gallery phones: add settled class after animation
+            if (el.closest('.screenshots-scroll')) {
+                setTimeout(function() { el.classList.add('settled'); }, d + 950);
+            }
+            obs.unobserve(el);
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+    document.querySelectorAll('.anim').forEach(function(el) { obs.observe(el); });
+})();
+
+// === Hero parallax tilt on mouse move (desktop only) ===
+(function() {
+    if (window.matchMedia('(max-width: 768px)').matches) return;
+    var hero = document.getElementById('hero-section');
+    var phones = document.querySelectorAll('#hero-phones .phone-frame');
+    if (!hero || phones.length < 2) return;
+
+    // Wait for entrance animations to finish (1.7s = longest delay + duration)
+    setTimeout(function() {
+        // Kill CSS animation and take over with JS
+        phones[0].style.animation = 'none';
+        phones[0].style.opacity = '1';
+        phones[0].style.transform = 'rotateY(8deg) rotateX(2deg)';
+        phones[0].style.transition = 'transform 0.15s ease-out';
+
+        phones[1].style.animation = 'none';
+        phones[1].style.opacity = '1';
+        phones[1].style.transform = 'rotateY(-6deg) rotateX(-3deg) translateY(-24px)';
+        phones[1].style.transition = 'transform 0.15s ease-out';
+
+        hero.addEventListener('mousemove', function(e) {
+            var rect = hero.getBoundingClientRect();
+            var x = (e.clientX - rect.left) / rect.width - 0.5;
+            var y = (e.clientY - rect.top) / rect.height - 0.5;
+            phones[0].style.transform =
+                'rotateY(' + (8 + x * 12) + 'deg) rotateX(' + (2 - y * 8) + 'deg) translateZ(' + (x * 20) + 'px)';
+            phones[1].style.transform =
+                'rotateY(' + (-6 + x * 8) + 'deg) rotateX(' + (-3 - y * 6) + 'deg) translateY(-24px) translateZ(' + (-x * 15) + 'px)';
+        });
+
+        hero.addEventListener('mouseleave', function() {
+            phones[0].style.transform = 'rotateY(8deg) rotateX(2deg)';
+            phones[1].style.transform = 'rotateY(-6deg) rotateX(-3deg) translateY(-24px)';
+        });
+    }, 1800);
+})();
+</script>
+
+</body>
+</html>

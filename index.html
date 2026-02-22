@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aircon Chen - Apps</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0A0E23;
+            --card: #141832;
+            --accent: #BF5AF2;
+            --text: #E8E7FF;
+            --secondary: #9D9AE8;
+            --border: rgba(191, 90, 242, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Ambient glow */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -40%;
+            left: -20%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(ellipse, rgba(191,90,242,0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            right: -20%;
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(ellipse, rgba(94,92,230,0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 80px 0 40px;
+        }
+        header h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--text), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        header p {
+            color: var(--secondary);
+            font-size: 1.1rem;
+            margin-top: 12px;
+        }
+
+        /* App Grid */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 28px;
+            padding: 40px 0 80px;
+        }
+
+        /* App Card */
+        .app-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px 28px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                        border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .app-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(191,90,242,0.05), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .app-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 60px rgba(191, 90, 242, 0.12), 0 4px 20px rgba(0,0,0,0.3);
+            border-color: rgba(191, 90, 242, 0.3);
+        }
+        .app-card:hover::before {
+            opacity: 1;
+        }
+
+        .app-icon {
+            width: 96px;
+            height: 96px;
+            border-radius: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .app-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .app-tagline {
+            font-size: 0.95rem;
+            color: var(--secondary);
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
+        }
+
+        .app-badge {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+        .badge-ios {
+            background: rgba(191, 90, 242, 0.15);
+            color: var(--accent);
+        }
+
+        /* Entrance animations */
+        .anim {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .anim.visible {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            color: var(--secondary);
+            font-size: 0.85rem;
+        }
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            header { padding: 60px 0 30px; }
+            header h1 { font-size: 1.8rem; }
+            .app-grid { gap: 20px; padding: 30px 0 60px; }
+            .app-card { padding: 24px 20px; }
+            .app-icon { width: 80px; height: 80px; border-radius: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="anim">
+            <h1>Aircon Chen</h1>
+            <p>iOS Apps</p>
+        </header>
+
+        <div class="app-grid">
+            <a href="sightreading/" class="app-card anim">
+                <img src="sightreading/app-icon.png" alt="SightReading App Icon" class="app-icon">
+                <div class="app-name">SightReading</div>
+                <div class="app-tagline">Master sight-reading with interactive piano practice. Train your musical notation skills one note at a time.</div>
+                <span class="app-badge badge-ios">iOS</span>
+            </a>
+        </div>
+
+        <footer class="anim">
+            <p>&copy; 2025 Aircon Chen &middot; <a href="https://github.com/aircon-chen">GitHub</a></p>
+        </footer>
+    </div>
+
+    <script>
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.anim').forEach(function(el, i) {
+            el.style.transitionDelay = (i * 0.12) + 's';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
