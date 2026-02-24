@@ -159,6 +159,13 @@
             background: rgba(191, 90, 242, 0.15);
             color: var(--accent);
         }
+        .badge-android {
+            background: rgba(52, 168, 83, 0.15);
+            color: #34A853;
+        }
+        .app-badges {
+            display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+        }
 
         /* Entrance animations */
         .anim {
@@ -201,7 +208,7 @@
     <div class="container">
         <header class="anim">
             <h1>Aircon Chen</h1>
-            <p>iOS Apps</p>
+            <p>Apps</p>
         </header>
 
         <div class="app-grid">
@@ -209,7 +216,10 @@
                 <img src="sightreading/app-icon.png" alt="SightReading App Icon" class="app-icon">
                 <div class="app-name">SightReading</div>
                 <div class="app-tagline">Master sight-reading with interactive piano practice. Train your musical notation skills one note at a time.</div>
-                <span class="app-badge badge-ios">iOS</span>
+                <div class="app-badges">
+                    <span class="app-badge badge-ios">iOS</span>
+                    <span class="app-badge badge-android">Android</span>
+                </div>
             </a>
         </div>
 

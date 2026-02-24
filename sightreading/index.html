@@ -109,9 +109,13 @@
         }
         .hero-text .subtitle { font-size: 1.2rem; color: var(--text2); margin-bottom: 28px; }
 
+        .store-badges { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
         .app-store-badge { display: inline-block; transition: transform 0.2s; }
         .app-store-badge:hover { transform: scale(1.05); }
         .app-store-badge img { height: 54px; }
+        .google-play-badge { display: inline-block; transition: transform 0.2s; }
+        .google-play-badge:hover { transform: scale(1.05); }
+        .google-play-badge img { height: 54px; }
 
         /* Hero phone showcase — 3D perspective */
         .hero-screenshots {
@@ -148,13 +152,31 @@
             border-radius: 26px;
         }
 
+        /* Android phone frame — no notch, slightly rounded */
+        .phone-frame-android {
+            position: relative;
+            background: #2a2a2c;
+            border-radius: 24px;
+            padding: 6px;
+            box-shadow:
+                0 0 0 1px #4a4a4e,
+                0 12px 48px rgba(0,0,0,0.45);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s;
+            will-change: transform;
+        }
+        .phone-frame-android img {
+            display: block; width: 100%;
+            border-radius: 18px;
+        }
+
         .hero-screenshots .phone-frame { width: 200px; }
+        .hero-screenshots .phone-frame-android { width: 200px; }
 
         /* 3D idle tilt — staggered for each phone */
         .hero-screenshots .phone-frame:first-child {
             transform: rotateY(8deg) rotateX(2deg) translateY(0px);
         }
-        .hero-screenshots .phone-frame:nth-child(2) {
+        .hero-screenshots .phone-frame-android {
             transform: rotateY(-6deg) rotateX(-3deg) translateY(-24px);
         }
 
@@ -183,7 +205,7 @@
         .feature-card p { color: var(--text2); font-size: 0.95rem; }
 
         /* Screenshots gallery — 3D fan layout */
-        .screenshots { padding: 80px 24px; text-align: center; }
+        .screenshots { padding: 80px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; }
         .screenshots h2 { font-size: 2rem; margin-bottom: 48px; }
 
         .screenshots-scroll {
@@ -199,10 +221,31 @@
         .screenshots-scroll .phone-frame:nth-child(3) { transform: rotateY(-4deg) translateZ(40px) translateY(-12px); }
         .screenshots-scroll .phone-frame:nth-child(4) { transform: rotateY(-12deg) translateZ(20px); }
 
-        .screenshots-scroll .phone-frame:hover {
+        .screenshots-scroll .phone-frame:hover,
+        .screenshots-scroll .phone-frame-android:hover {
             transform: rotateY(0deg) translateZ(60px) translateY(-16px) scale(1.04) !important;
             box-shadow: 0 0 0 1px #4a4a4e, 0 24px 64px rgba(191,90,242,0.2);
         }
+
+        /* Platform tabs */
+        .platform-tabs {
+            display: flex; justify-content: center; gap: 4px;
+            margin-bottom: 36px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 12px; padding: 4px;
+            display: inline-flex;
+        }
+        .screenshots h2 { margin-bottom: 24px; }
+        .platform-tab {
+            background: none; border: none; color: var(--text2);
+            font-size: 0.95rem; padding: 8px 20px; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s; font-family: inherit;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .platform-tab:hover { color: var(--text); }
+        .platform-tab.active { background: var(--accent); color: white; }
+
+        .screenshots-scroll .phone-frame-android { width: 210px; }
 
         /* Story */
         .story { padding: 80px 24px; max-width: 700px; margin: 0 auto; }
@@ -330,15 +373,16 @@
         .hero h1,
         .hero .subtitle,
         .hero .hero-badge,
-        .hero .app-store-badge,
-        .hero-screenshots .phone-frame {
+        .hero .store-badges,
+        .hero-screenshots .phone-frame,
+        .hero-screenshots .phone-frame-android {
             opacity: 0;
         }
         .hero .app-icon { animation: riseRotate 0.7s 0.2s cubic-bezier(0.22,1,0.36,1) forwards; }
         .hero h1 { animation: fadeUp3D 0.8s 0.35s cubic-bezier(0.22,1,0.36,1) forwards; }
         .hero .subtitle { animation: fadeUp3D 0.8s 0.5s cubic-bezier(0.22,1,0.36,1) forwards; }
         .hero .hero-badge { animation: fadeUp3D 0.8s 0.57s cubic-bezier(0.22,1,0.36,1) forwards; }
-        .hero .app-store-badge { animation: fadeUp3D 0.8s 0.65s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .hero .store-badges { animation: fadeUp3D 0.8s 0.65s cubic-bezier(0.22,1,0.36,1) forwards; }
 
         @keyframes heroPhone1 {
             from { opacity: 0; transform: perspective(1200px) rotateY(-30deg) translateX(100px) translateZ(-100px); }
@@ -349,7 +393,7 @@
             to { opacity: 1; transform: perspective(1200px) rotateY(-6deg) rotateX(-3deg) translateY(-24px); }
         }
         .hero-screenshots .phone-frame:first-child { animation: heroPhone1 1s 0.5s cubic-bezier(0.22,1,0.36,1) forwards; }
-        .hero-screenshots .phone-frame:nth-child(2) { animation: heroPhone2 1s 0.7s cubic-bezier(0.22,1,0.36,1) forwards; }
+        .hero-screenshots .phone-frame-android { animation: heroPhone2 1s 0.7s cubic-bezier(0.22,1,0.36,1) forwards; }
 
         /* After flip-in finishes, restore fan tilt — !important to override animation fill */
         .screenshots-scroll .phone-frame.settled:nth-child(1) { animation: none !important; opacity: 1 !important; transform: rotateY(12deg) translateZ(20px); transition: transform 0.4s; }
@@ -372,19 +416,19 @@
             .hero-screenshots .phone-frame { width: 150px; border-radius: 24px; padding: 5px; }
             .hero-screenshots .phone-frame::before { width: 44px; height: 14px; top: 5px; border-radius: 0 0 10px 10px; }
             .hero-screenshots .phone-frame img { border-radius: 19px; }
+            .hero-screenshots .phone-frame-android { width: 150px; border-radius: 18px; padding: 5px; }
+            .hero-screenshots .phone-frame-android img { border-radius: 14px; }
             .screenshots-scroll .phone-frame { width: 160px; border-radius: 24px; padding: 5px; }
             .screenshots-scroll .phone-frame::before { width: 44px; height: 14px; top: 5px; border-radius: 0 0 10px 10px; }
             .screenshots-scroll .phone-frame img { border-radius: 19px; }
+            .screenshots-scroll .phone-frame-android { width: 160px; border-radius: 18px; padding: 5px; }
+            .screenshots-scroll .phone-frame-android img { border-radius: 14px; }
             .nav-links { display: none; }
             /* Flatten 3D on mobile */
-            .screenshots-scroll .phone-frame:nth-child(1),
-            .screenshots-scroll .phone-frame:nth-child(2),
-            .screenshots-scroll .phone-frame:nth-child(3),
-            .screenshots-scroll .phone-frame:nth-child(4),
-            .screenshots-scroll .phone-frame.settled:nth-child(1),
-            .screenshots-scroll .phone-frame.settled:nth-child(2),
-            .screenshots-scroll .phone-frame.settled:nth-child(3),
-            .screenshots-scroll .phone-frame.settled:nth-child(4) {
+            .screenshots-scroll .phone-frame,
+            .screenshots-scroll .phone-frame.settled,
+            .screenshots-scroll .phone-frame-android,
+            .screenshots-scroll .phone-frame-android.settled {
                 transform: none !important;
             }
         }
@@ -392,9 +436,13 @@
             .hero-screenshots .phone-frame { width: 120px; border-radius: 20px; padding: 4px; }
             .hero-screenshots .phone-frame::before { width: 36px; height: 12px; top: 4px; border-radius: 0 0 8px 8px; }
             .hero-screenshots .phone-frame img { border-radius: 16px; }
+            .hero-screenshots .phone-frame-android { width: 120px; border-radius: 16px; padding: 4px; }
+            .hero-screenshots .phone-frame-android img { border-radius: 12px; }
             .screenshots-scroll .phone-frame { width: 140px; border-radius: 20px; padding: 4px; }
             .screenshots-scroll .phone-frame::before { width: 36px; height: 12px; top: 4px; border-radius: 0 0 8px 8px; }
             .screenshots-scroll .phone-frame img { border-radius: 16px; }
+            .screenshots-scroll .phone-frame-android { width: 140px; border-radius: 16px; padding: 4px; }
+            .screenshots-scroll .phone-frame-android img { border-radius: 12px; }
             .hero-text h1 { font-size: 1.8rem; }
         }
 
@@ -448,13 +496,18 @@
                     <span data-i18n="en">100+ Five-Star Reviews on App Store</span>
                 </span>
             </div><br>
-            <a href="https://apps.apple.com/app/id6743129507" class="app-store-badge">
-                <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store">
-            </a>
+            <div class="store-badges">
+                <a href="https://apps.apple.com/app/id6743129507" class="app-store-badge">
+                    <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store">
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=tw.aircon.ims" class="google-play-badge">
+                    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" style="height:80px;margin:-13px 0;">
+                </a>
+            </div>
         </div>
         <div class="hero-screenshots" id="hero-phones">
-            <div class="phone-frame"><img src="screenshot-practice.png" alt="Practice Mode"></div>
-            <div class="phone-frame"><img src="screenshot-challenge.png" alt="Challenge Mode"></div>
+            <div class="phone-frame"><img src="screenshot-practice.png" alt="Practice Mode - iOS"></div>
+            <div class="phone-frame-android"><img src="android-practice.png" alt="Practice Mode - Android"></div>
         </div>
     </div>
 </section>
@@ -552,9 +605,14 @@
 
 <!-- Mid-page CTA -->
 <div style="text-align:center;padding:20px 24px 60px;">
-    <a href="https://apps.apple.com/app/id6743129507" class="app-store-badge anim fade-up-3d">
-        <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store">
-    </a>
+    <div class="store-badges" style="justify-content:center;">
+        <a href="https://apps.apple.com/app/id6743129507" class="app-store-badge anim fade-up-3d">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store">
+        </a>
+        <a href="https://play.google.com/store/apps/details?id=tw.aircon.ims" class="google-play-badge anim fade-up-3d" data-delay="100">
+            <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" style="height:80px;margin:-13px 0;">
+        </a>
+    </div>
 </div>
 
 <!-- Screenshots -->
@@ -564,18 +622,48 @@
         <span data-i18n="zh-Hans">App 截图</span>
         <span data-i18n="en">Screenshots</span>
     </h2>
-    <div class="screenshots-scroll" id="gallery">
-        <div class="phone-frame anim flip-in" data-delay="0" style="--d:0ms">
-            <img src="screenshot-practice.png" alt="Practice" loading="lazy">
+
+    <!-- Platform tabs -->
+    <div class="platform-tabs anim fade-up-3d" data-delay="0">
+        <button class="platform-tab active" data-platform="ios">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:-2px;"><path d="M12.2 5.4c-.1.1-1.8 1-1.8 3.1 0 2.4 2.1 3.3 2.2 3.3 0 0-.3 1.1-1.1 2.2-.7 1-1.4 1.9-2.5 1.9s-1.4-.6-2.6-.6c-1.3 0-1.7.7-2.7.7S2.1 15.1 1.3 14C.3 12.6 0 9.8 0 9.8c0-3.2 2.1-4.9 4.1-4.9 1.1 0 2 .7 2.6.7.6 0 1.6-.8 2.9-.8.5 0 2 .1 2.6 1.6zM9.8 3.2c.5-.6.9-1.5.9-2.4 0-.1 0-.3 0-.4-.8 0-1.8.6-2.4 1.2-.5.5-1 1.4-1 2.3 0 .1 0 .3 0 .4.1 0 .2 0 .3 0 .8 0 1.7-.5 2.2-1.1z"/></svg>
+            iOS
+        </button>
+        <button class="platform-tab" data-platform="android">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:-2px;"><path d="M1.2 5.6c-.7 0-1.2.5-1.2 1.2v3.4c0 .7.5 1.2 1.2 1.2.7 0 1.2-.5 1.2-1.2V6.8c0-.7-.5-1.2-1.2-1.2zm2.2 0v6c0 .6.5 1.1 1.1 1.1h.9v2.1c0 .7.5 1.2 1.2 1.2.7 0 1.2-.5 1.2-1.2v-2.1h1.4v2.1c0 .7.5 1.2 1.2 1.2.7 0 1.2-.5 1.2-1.2v-2.1h.9c.6 0 1.1-.5 1.1-1.1v-6H3.4zm11.4 0c-.7 0-1.2.5-1.2 1.2v3.4c0 .7.5 1.2 1.2 1.2.7 0 1.2-.5 1.2-1.2V6.8c0-.7-.5-1.2-1.2-1.2zM10.8 1l.9-.9c.1-.1.1-.3 0-.4-.1-.1-.3-.1-.4 0l-1 1C9.7.4 9 .1 8.2.1s-1.5.3-2.1.6l-1-1c-.1-.1-.3-.1-.4 0-.1.1-.1.3 0 .4l.9.9C4.4 1.8 3.5 3.3 3.4 5h9.6c-.1-1.7-1-3.2-2.2-4zM6.1 3.4c-.3 0-.5-.2-.5-.5s.2-.5.5-.5.5.2.5.5-.2.5-.5.5zm4.2 0c-.3 0-.5-.2-.5-.5s.2-.5.5-.5.5.2.5.5-.2.5-.5.5z"/></svg>
+            Android
+        </button>
+    </div>
+
+    <div class="screenshots-scroll" id="gallery" data-active-platform="ios">
+        <!-- iOS screenshots -->
+        <div class="phone-frame anim flip-in screenshot-ios" data-delay="0" style="--d:0ms">
+            <img src="screenshot-practice.png" alt="Practice - iOS" loading="lazy">
         </div>
-        <div class="phone-frame anim flip-in" data-delay="150" style="--d:150ms">
-            <img src="screenshot-challenge.png" alt="Challenge" loading="lazy">
+        <div class="phone-frame anim flip-in screenshot-ios" data-delay="150" style="--d:150ms">
+            <img src="screenshot-challenge.png" alt="Challenge - iOS" loading="lazy">
         </div>
-        <div class="phone-frame anim flip-in" data-delay="300" style="--d:300ms">
-            <img src="screenshot-statistics.png" alt="Statistics" loading="lazy">
+        <div class="phone-frame anim flip-in screenshot-ios" data-delay="300" style="--d:300ms">
+            <img src="screenshot-statistics.png" alt="Statistics - iOS" loading="lazy">
         </div>
-        <div class="phone-frame anim flip-in" data-delay="450" style="--d:450ms">
-            <img src="screenshot-settings.png" alt="Settings" loading="lazy">
+        <div class="phone-frame anim flip-in screenshot-ios" data-delay="450" style="--d:450ms">
+            <img src="screenshot-settings.png" alt="Settings - iOS" loading="lazy">
+        </div>
+        <!-- Android screenshots -->
+        <div class="phone-frame-android anim flip-in screenshot-android" data-delay="0" style="--d:0ms;display:none">
+            <img src="android-practice.png" alt="Practice - Android" loading="lazy">
+        </div>
+        <div class="phone-frame-android anim flip-in screenshot-android" data-delay="150" style="--d:150ms;display:none">
+            <img src="android-challenge.png" alt="Challenge - Android" loading="lazy">
+        </div>
+        <div class="phone-frame-android anim flip-in screenshot-android" data-delay="300" style="--d:300ms;display:none">
+            <img src="android-timer-challenge.png" alt="Timer Challenge - Android" loading="lazy">
+        </div>
+        <div class="phone-frame-android anim flip-in screenshot-android" data-delay="450" style="--d:450ms;display:none">
+            <img src="android-stats.png" alt="Statistics - Android" loading="lazy">
+        </div>
+        <div class="phone-frame-android anim flip-in screenshot-android" data-delay="600" style="--d:600ms;display:none">
+            <img src="android-settings.png" alt="Settings - Android" loading="lazy">
         </div>
     </div>
 </section>
@@ -711,9 +799,14 @@
         <span data-i18n="zh-Hans">完全免费，现在就下载。</span>
         <span data-i18n="en">Completely free. Download now.</span>
     </p>
-    <a href="https://apps.apple.com/app/id6743129507" class="app-store-badge anim fade-up-3d" data-delay="200">
-        <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store">
-    </a>
+    <div class="store-badges anim fade-up-3d" data-delay="200" style="justify-content:center;">
+        <a href="https://apps.apple.com/app/id6743129507" class="app-store-badge">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store">
+        </a>
+        <a href="https://play.google.com/store/apps/details?id=tw.aircon.ims" class="google-play-badge">
+            <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" style="height:80px;margin:-13px 0;">
+        </a>
+    </div>
 </section>
 
 <!-- Support -->
@@ -778,6 +871,7 @@
     <p>&copy; 2026 SightReading. All rights reserved.</p>
     <p style="margin-top: 8px;">
         <a href="https://apps.apple.com/app/id6743129507">App Store</a> &middot;
+        <a href="https://play.google.com/store/apps/details?id=tw.aircon.ims">Google Play</a> &middot;
         <a href="#support"><span data-i18n="zh-Hant" class="active">支援</span><span data-i18n="zh-Hans">支持</span><span data-i18n="en">Support</span></a> &middot;
         <a href="#privacy"><span data-i18n="zh-Hant" class="active">隱私權政策</span><span data-i18n="zh-Hans">隐私政策</span><span data-i18n="en">Privacy Policy</span></a>
     </p>
@@ -835,8 +929,10 @@
 (function() {
     if (window.matchMedia('(max-width: 768px)').matches) return;
     var hero = document.getElementById('hero-section');
-    var phones = document.querySelectorAll('#hero-phones .phone-frame');
-    if (!hero || phones.length < 2) return;
+    var phone1 = document.querySelector('#hero-phones .phone-frame');
+    var phone2 = document.querySelector('#hero-phones .phone-frame-android');
+    var phones = [phone1, phone2];
+    if (!hero || !phone1 || !phone2) return;
 
     // Wait for entrance animations to finish (1.7s = longest delay + duration)
     setTimeout(function() {
@@ -866,6 +962,32 @@
             phones[1].style.transform = 'rotateY(-6deg) rotateX(-3deg) translateY(-24px)';
         });
     }, 1800);
+})();
+
+// === Platform screenshot tabs ===
+(function() {
+    var tabs = document.querySelectorAll('.platform-tab');
+    var iosScreenshots = document.querySelectorAll('.screenshot-ios');
+    var androidScreenshots = document.querySelectorAll('.screenshot-android');
+
+    tabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+            var platform = this.getAttribute('data-platform');
+            tabs.forEach(function(t) { t.classList.remove('active'); });
+            this.classList.add('active');
+
+            if (platform === 'ios') {
+                iosScreenshots.forEach(function(el) { el.style.display = ''; });
+                androidScreenshots.forEach(function(el) { el.style.display = 'none'; });
+            } else {
+                iosScreenshots.forEach(function(el) { el.style.display = 'none'; });
+                androidScreenshots.forEach(function(el) {
+                    el.style.display = '';
+                    el.classList.add('visible', 'settled');
+                });
+            }
+        });
+    });
 })();
 </script>
 
