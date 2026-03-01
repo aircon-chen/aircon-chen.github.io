@@ -169,94 +169,153 @@
             border-radius: 8px;
             font-weight: 600;
             font-size: 0.85rem;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
             box-shadow: 0 2px 8px rgba(191, 90, 242, 0.25);
             cursor: default;
             opacity: 0.7;
             pointer-events: none;
-        }
-        nav .nav-links .nav-download:hover {
-            color: #fff;
         }
 
         /* ======================== */
         /* HERO                     */
         /* ======================== */
         .hero {
-            text-align: center;
-            padding: 160px 0 80px;
             position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 24px 0;
+            /* Dark starry background matching app icon */
+            background: radial-gradient(ellipse at 30% 20%, rgba(100, 50, 150, 0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 30%, rgba(60, 80, 180, 0.1) 0%, transparent 50%),
+                        radial-gradient(ellipse at 50% 80%, rgba(150, 50, 100, 0.08) 0%, transparent 50%),
+                        var(--bg);
         }
-
-        /* Floating particles */
-        .hero-particles {
+        /* Starfield dots */
+        .hero-stars {
             position: absolute;
             inset: 0;
-            overflow: hidden;
             pointer-events: none;
+            z-index: 0;
         }
-        .particle {
+        .hero-stars::before,
+        .hero-stars::after {
+            content: '';
             position: absolute;
             border-radius: 50%;
-            animation: float-particle linear infinite;
-            opacity: 0.4;
-            will-change: transform;
         }
-        @keyframes float-particle {
-            0% { transform: translateY(100vh) rotate(0deg) scale(0); opacity: 0; }
-            10% { opacity: 0.4; transform: translateY(80vh) rotate(36deg) scale(1); }
-            90% { opacity: 0.3; }
-            100% { transform: translateY(-10vh) rotate(360deg) scale(0.5); opacity: 0; }
+        .hero-stars::before {
+            width: 2px; height: 2px;
+            top: 15%; left: 20%;
+            box-shadow:
+                0 0 2px 1px rgba(255,255,255,0.3),
+                80px 30px 2px 0 rgba(255,200,100,0.4),
+                200px -10px 1px 0 rgba(200,150,255,0.3),
+                350px 50px 2px 1px rgba(100,200,255,0.3),
+                500px 20px 1px 0 rgba(255,150,150,0.4),
+                650px 60px 2px 0 rgba(150,255,200,0.3),
+                800px 10px 1px 1px rgba(255,255,150,0.3),
+                120px 80px 1px 0 rgba(200,200,255,0.4),
+                280px 120px 2px 0 rgba(255,180,100,0.3),
+                450px 90px 1px 1px rgba(150,200,255,0.4),
+                600px 130px 2px 0 rgba(255,150,200,0.3),
+                750px 100px 1px 0 rgba(200,255,200,0.3),
+                900px 70px 2px 1px rgba(255,200,150,0.4),
+                50px 150px 1px 0 rgba(150,150,255,0.3),
+                180px 200px 2px 0 rgba(255,255,200,0.3);
+        }
+        .hero-stars::after {
+            width: 2px; height: 2px;
+            top: 40%; left: 10%;
+            box-shadow:
+                30px 20px 2px 0 rgba(255,200,200,0.3),
+                150px 50px 1px 1px rgba(200,200,255,0.4),
+                300px 30px 2px 0 rgba(255,255,150,0.3),
+                420px 70px 1px 0 rgba(150,255,255,0.3),
+                550px 40px 2px 1px rgba(255,180,255,0.4),
+                700px 20px 1px 0 rgba(200,255,150,0.3),
+                850px 60px 2px 0 rgba(255,200,255,0.3),
+                100px 100px 1px 1px rgba(150,200,255,0.3),
+                250px 80px 2px 0 rgba(255,150,150,0.4),
+                380px 110px 1px 0 rgba(200,255,200,0.3),
+                520px 90px 2px 1px rgba(255,255,200,0.3);
         }
 
-        .hero-icon {
-            width: 140px;
-            height: 140px;
-            border-radius: 32px;
-            box-shadow: 0 16px 48px rgba(191, 90, 242, 0.25), 0 4px 16px rgba(0,0,0,0.4);
-            margin-bottom: 28px;
-            animation: hero-bounce 3s ease-in-out infinite;
+        /* Hero text content */
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 20px;
         }
-        @keyframes hero-bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
-
-        .hero h1 {
+        .hero-content h1 {
             font-size: 3.6rem;
             font-weight: 800;
             letter-spacing: -1px;
-            background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, #FF6B6B 100%);
+            background: linear-gradient(135deg, #fff 0%, #E8C8FF 50%, #FFB8C8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 16px;
         }
-
-        .hero .tagline {
-            font-size: 1.4rem;
+        .hero-content .tagline {
+            font-size: 1.3rem;
             color: var(--text);
             margin-bottom: 8px;
             font-weight: 500;
         }
-
-        .hero .tagline-sub {
-            font-size: 1.05rem;
+        .hero-content .tagline-sub {
+            font-size: 1rem;
             color: var(--secondary);
-            margin-bottom: 36px;
-            font-weight: 400;
-            max-width: 520px;
+            margin-bottom: 32px;
+            max-width: 480px;
             margin-left: auto;
             margin-right: auto;
             line-height: 1.6;
         }
-
-        .hero .cta-group {
+        .hero-content .cta-group {
             display: flex;
             gap: 16px;
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
+        }
+        .hero-content .hero-sub {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--secondary);
+            background: rgba(255, 255, 255, 0.06);
+            padding: 6px 18px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 500;
+        }
+
+        /* Characters image from app icon */
+        .hero-characters {
+            position: relative;
+            z-index: 1;
+            width: 130%;
+            max-width: 1100px;
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+        .hero-characters img {
+            width: 100%;
+            height: auto;
+            display: block;
+            /* Mask rounded corners: fade edges into background */
+            mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 85%, transparent 100%),
+                        linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+            mask-composite: intersect;
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 85%, transparent 100%),
+                               linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+            -webkit-mask-composite: source-in;
         }
 
         .btn-appstore {
@@ -276,56 +335,11 @@
             height: 22px;
             fill: currentColor;
         }
-        /* Coming soon state (#1) */
         .btn-appstore.coming-soon {
             background: linear-gradient(135deg, #4A4A6A, #3A3A5A);
             box-shadow: 0 4px 16px rgba(0,0,0,0.3);
             cursor: default;
             pointer-events: none;
-        }
-
-        .hero-sub {
-            display: inline-block;
-            margin-top: 24px;
-            font-size: 0.9rem;
-            color: var(--accent);
-            background: rgba(191, 90, 242, 0.1);
-            padding: 6px 18px;
-            border-radius: 20px;
-            border: 1px solid rgba(191, 90, 242, 0.2);
-            font-weight: 500;
-        }
-
-        /* Hero phones (#5) */
-        .hero-phones {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-top: 48px;
-            perspective: 1000px;
-        }
-        .hero-phone {
-            width: 160px;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 16px 48px rgba(0,0,0,0.4);
-            border: 2px solid rgba(255,255,255,0.06);
-            transition: transform 0.4s ease;
-        }
-        .hero-phone img {
-            width: 100%;
-            display: block;
-        }
-        .hero-phone:nth-child(1) {
-            transform: rotateY(8deg) rotateX(2deg) translateY(12px);
-        }
-        .hero-phone:nth-child(2) {
-            transform: scale(1.08) translateY(-4px);
-            z-index: 2;
-            box-shadow: 0 24px 64px rgba(191, 90, 242, 0.2), 0 8px 32px rgba(0,0,0,0.4);
-        }
-        .hero-phone:nth-child(3) {
-            transform: rotateY(-8deg) rotateX(2deg) translateY(12px);
         }
 
         /* ======================== */
@@ -703,32 +717,10 @@
                         transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        /* Staggered hero animation (#26) */
-        .hero .hero-stagger {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        .hero.visible .hero-stagger {
-            opacity: 1;
-            transform: translateY(0);
-            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-                        transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .hero.visible .hero-stagger:nth-child(1) { transition-delay: 0s; }
-        .hero.visible .hero-stagger:nth-child(2) { transition-delay: 0.12s; }
-        .hero.visible .hero-stagger:nth-child(3) { transition-delay: 0.24s; }
-        .hero.visible .hero-stagger:nth-child(4) { transition-delay: 0.36s; }
-        .hero.visible .hero-stagger:nth-child(5) { transition-delay: 0.48s; }
-        .hero.visible .hero-stagger:nth-child(6) { transition-delay: 0.60s; }
-        .hero.visible .hero-stagger:nth-child(7) { transition-delay: 0.72s; }
-
         /* Reduced motion (#8) */
         @media (prefers-reduced-motion: reduce) {
-            .particle { display: none; }
-            .hero-icon { animation: none; }
             .combo-badge { animation: none; }
             .anim { opacity: 1; transform: none; transition: none; }
-            .hero .hero-stagger { opacity: 1; transform: none; transition: none; }
             html { scroll-behavior: auto; }
         }
 
@@ -742,31 +734,23 @@
             .theme-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
-            .hero-phones {
-                gap: 10px;
-            }
-            .hero-phone {
-                width: 120px;
-            }
         }
 
         @media (max-width: 600px) {
             .hero {
-                padding: 130px 0 60px;
+                padding: 100px 16px 0;
             }
-            .hero-icon {
-                width: 100px;
-                height: 100px;
-                border-radius: 24px;
-            }
-            .hero h1 {
+            .hero-content h1 {
                 font-size: 2.4rem;
             }
-            .hero .tagline {
-                font-size: 1.1rem;
+            .hero-content .tagline {
+                font-size: 1.05rem;
             }
-            .hero .tagline-sub {
-                font-size: 0.95rem;
+            .hero-content .tagline-sub {
+                font-size: 0.9rem;
+            }
+            .hero-characters {
+                width: 140%;
             }
             .section-title {
                 font-size: 1.6rem;
@@ -800,14 +784,6 @@
                 padding: 8px 16px;
                 font-size: 0.85rem;
             }
-            .hero-phones {
-                gap: 8px;
-                margin-top: 36px;
-            }
-            .hero-phone {
-                width: 100px;
-                border-radius: 14px;
-            }
         }
 
         @media (max-width: 380px) {
@@ -836,35 +812,28 @@
     </nav>
 
     <main>
-    <div class="container">
 
         <!-- Hero Section -->
         <section class="hero anim" id="hero">
-            <div class="hero-particles" id="particles"></div>
-            <img src="images/app-icon.png" alt="Plumble App Icon" class="hero-icon hero-stagger">
-            <h1 class="hero-stagger">Plumble</h1>
-            <p class="tagline hero-stagger">丟下、碰撞、合體！停不下來的物理合併遊戲</p>
-            <p class="tagline-sub hero-stagger">可愛角色 x 物理碰撞 x Combo 連鎖 — 你能撐到 Lv.10 大爆炸嗎？</p>
-            <div class="cta-group hero-stagger">
-                <a href="#" class="btn-appstore coming-soon">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
-                    即將上架 App Store
-                </a>
+            <div class="hero-stars"></div>
+            <div class="hero-content">
+                <h1>Plumble</h1>
+                <p class="tagline">丟下、碰撞、合體！停不下來的物理合併遊戲</p>
+                <p class="tagline-sub">可愛角色 x 物理碰撞 x Combo 連鎖 — 你能撐到 Lv.10 大爆炸嗎？</p>
+                <div class="cta-group">
+                    <a href="#" class="btn-appstore coming-soon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
+                        即將上架 App Store
+                    </a>
+                </div>
+                <span class="hero-sub">免費遊玩 · 5 種主題 · 13 種語言</span>
             </div>
-            <span class="hero-sub hero-stagger">免費遊玩 · 無干擾廣告</span>
-            <!-- Hero phone showcase (#5) -->
-            <div class="hero-phones hero-stagger">
-                <div class="hero-phone">
-                    <img src="images/screenshot-gameplay1.png" alt="遊戲畫面" loading="lazy">
-                </div>
-                <div class="hero-phone">
-                    <img src="images/screenshot-gameplay3.png" alt="Lv.10 大爆炸">
-                </div>
-                <div class="hero-phone">
-                    <img src="images/screenshot-gameplay2.png" alt="Combo 連鎖" loading="lazy">
-                </div>
+            <div class="hero-characters">
+                <img src="images/app-icon.png" alt="Plumble 遊戲角色">
             </div>
         </section>
+
+    <div class="container">
 
         <!-- Screenshots Section -->
         <section class="screenshots anim" id="screenshots">
@@ -1070,23 +1039,6 @@
             }
         }, { passive: true });
 
-        // Floating particles (reduced to 12, #20)
-        (function() {
-            const container = document.getElementById('particles');
-            const colors = ['#FF6B6B', '#FFB347', '#4ECDC4', '#BF5AF2', '#5E5CE6', '#45B7D1'];
-            for (let i = 0; i < 12; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                const size = Math.random() * 8 + 4;
-                p.style.width = size + 'px';
-                p.style.height = size + 'px';
-                p.style.left = Math.random() * 100 + '%';
-                p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                p.style.animationDuration = (Math.random() * 12 + 10) + 's';
-                p.style.animationDelay = (Math.random() * 8) + 's';
-                container.appendChild(p);
-            }
-        })();
     </script>
 <!-- Cloudflare Web Analytics (#25) --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "74a8ba2b053b4b4685ea06b84af714ae"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
