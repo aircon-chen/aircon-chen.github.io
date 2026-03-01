@@ -11,12 +11,18 @@
     <meta property="og:image" content="https://aircon-chen.github.io/plumble/images/app-icon.png">
     <meta property="og:url" content="https://aircon-chen.github.io/plumble/">
     <meta property="og:type" content="website">
+    <meta property="og:locale" content="zh_TW">
+    <meta property="og:site_name" content="Plumble">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Plumble — 超好玩物理合併遊戲">
     <meta name="twitter:description" content="充滿歡樂的物理合併遊戲。5 種主題、Combo 連鎖、搖晃物理效果。">
     <meta name="twitter:image" content="https://aircon-chen.github.io/plumble/images/app-icon.png">
     <link rel="canonical" href="https://aircon-chen.github.io/plumble/">
     <link rel="icon" type="image/png" href="images/app-icon.png">
+    <link rel="preconnect" href="https://static.cloudflareinsights.com">
+    <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
+    <link rel="preload" as="image" href="images/hero-characters.webp" type="image/webp">
+    <link rel="preload" as="image" href="images/hero-characters.jpg" type="image/jpeg">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -305,6 +311,7 @@
             margin-top: auto;
             flex-shrink: 0;
         }
+        .hero-characters picture { display: block; width: 100%; }
         .hero-characters img {
             width: 100%;
             height: auto;
@@ -409,10 +416,9 @@
             overflow: hidden;
             background: #000;
         }
-        .phone-screen img {
-            width: 100%;
-            display: block;
-        }
+        .phone-screen img,
+        .phone-screen picture { width: 100%; display: block; }
+        .phone-screen picture img { width: 100%; display: block; }
         .phone-label {
             text-align: center;
             margin-top: 14px;
@@ -532,6 +538,7 @@
             pointer-events: none;
         }
         /* Theme image aspect ratio fix (#6) */
+        .theme-card picture { display: block; }
         .theme-card img {
             width: 100%;
             aspect-ratio: 16/10;
@@ -710,6 +717,7 @@
             opacity: 0;
             transform: translateY(30px);
         }
+        /* Doubled .anim to raise specificity without !important */
         .anim.anim.visible {
             opacity: 1;
             transform: translateY(0);
@@ -792,6 +800,7 @@
             }
         }
     </style>
+    <noscript><style>.anim { opacity: 1; transform: none; }</style></noscript>
 </head>
 <body>
 
@@ -799,7 +808,7 @@
     <nav id="navbar" aria-label="主要導覽">
         <div class="nav-inner">
             <a href="index.html" class="nav-brand">
-                <img src="images/app-icon.png" alt="Plumble">
+                <img src="images/app-icon.png" alt="Plumble" width="32" height="32">
                 Plumble
             </a>
             <ul class="nav-links">
@@ -821,7 +830,7 @@
                 <p class="tagline">丟下、碰撞、合體！停不下來的物理合併遊戲</p>
                 <p class="tagline-sub">可愛角色 x 物理碰撞 x Combo 連鎖 — 你能撐到 Lv.10 大爆炸嗎？</p>
                 <div class="cta-group">
-                    <a href="#" class="btn-appstore coming-soon">
+                    <a href="#" class="btn-appstore coming-soon" aria-disabled="true" tabindex="-1" role="button">
                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
                         即將上架 App Store
                     </a>
@@ -829,7 +838,10 @@
                 <span class="hero-sub">免費遊玩 · 5 種主題 · 13 種語言</span>
             </div>
             <div class="hero-characters">
-                <img src="images/hero-characters.jpg" alt="Plumble 遊戲角色">
+                <picture>
+                    <source srcset="images/hero-characters.webp" type="image/webp">
+                    <img src="images/hero-characters.jpg" alt="Plumble 遊戲角色" width="1920" height="1195" fetchpriority="high">
+                </picture>
             </div>
         </section>
 
@@ -845,7 +857,7 @@
                         <div class="phone-bezel">
                             <div class="phone-notch"></div>
                             <div class="phone-screen">
-                                <img src="images/screenshot-menu.jpg" alt="主選單" loading="lazy">
+                                <picture><source srcset="images/screenshot-menu.webp" type="image/webp"><img src="images/screenshot-menu.jpg" alt="主選單" loading="lazy" width="460" height="999"></picture>
                             </div>
                         </div>
                         <div class="phone-label">主選單</div>
@@ -854,7 +866,7 @@
                         <div class="phone-bezel">
                             <div class="phone-notch"></div>
                             <div class="phone-screen">
-                                <img src="images/screenshot-gameplay1.jpg" alt="遊戲畫面" loading="lazy">
+                                <picture><source srcset="images/screenshot-gameplay1.webp" type="image/webp"><img src="images/screenshot-gameplay1.jpg" alt="遊戲畫面" loading="lazy" width="460" height="999"></picture>
                             </div>
                         </div>
                         <div class="phone-label">遊戲進行中</div>
@@ -863,7 +875,7 @@
                         <div class="phone-bezel">
                             <div class="phone-notch"></div>
                             <div class="phone-screen">
-                                <img src="images/screenshot-gameplay2.jpg" alt="Combo 連鎖" loading="lazy">
+                                <picture><source srcset="images/screenshot-gameplay2.webp" type="image/webp"><img src="images/screenshot-gameplay2.jpg" alt="Combo 連鎖" loading="lazy" width="460" height="999"></picture>
                             </div>
                         </div>
                         <div class="phone-label">Combo 連鎖</div>
@@ -872,7 +884,7 @@
                         <div class="phone-bezel">
                             <div class="phone-notch"></div>
                             <div class="phone-screen">
-                                <img src="images/screenshot-gameplay3.jpg" alt="Lv.10 大爆炸" loading="lazy">
+                                <picture><source srcset="images/screenshot-gameplay3.webp" type="image/webp"><img src="images/screenshot-gameplay3.jpg" alt="Lv.10 大爆炸" loading="lazy" width="460" height="999"></picture>
                             </div>
                         </div>
                         <div class="phone-label">Lv.10 大爆炸</div>
@@ -887,32 +899,32 @@
             <p class="section-subtitle">簡單上手，停不下來</p>
             <div class="feature-grid">
                 <div class="feature-card anim">
-                    <span class="feature-icon">🔥</span>
+                    <span class="feature-icon" aria-hidden="true">🔥</span>
                     <h3>Combo 連鎖系統</h3>
                     <p>連續合體觸發 NICE → GREAT → AMAZING → INCREDIBLE，最高 5 倍分數加成！</p>
                 </div>
                 <div class="feature-card anim">
-                    <span class="feature-icon">🎨</span>
+                    <span class="feature-icon" aria-hidden="true">🎨</span>
                     <h3>5 大主題</h3>
                     <p>水果、貓咪、美食、職業、垃圾，每種主題都有獨特角色等你收集進化。</p>
                 </div>
                 <div class="feature-card anim">
-                    <span class="feature-icon">📱</span>
+                    <span class="feature-icon" aria-hidden="true">📱</span>
                     <h3>搖晃物理效果</h3>
                     <p>搖晃或傾斜手機，讓場上的角色重新排列，創造更多合體機會！</p>
                 </div>
                 <div class="feature-card anim">
-                    <span class="feature-icon">💥</span>
+                    <span class="feature-icon" aria-hidden="true">💥</span>
                     <h3>Lv.10 超級爆炸</h3>
                     <p>合體到最高等級觸發大爆炸，清除全場 +5000 分，視覺效果超震撼！</p>
                 </div>
                 <div class="feature-card anim">
-                    <span class="feature-icon">♾️</span>
+                    <span class="feature-icon" aria-hidden="true">♾️</span>
                     <h3>挑戰不中斷</h3>
                     <p>失敗了也能繼續奮戰，不怕前功盡棄！挑戰你的最高分紀錄。</p>
                 </div>
                 <div class="feature-card anim">
-                    <span class="feature-icon">🌍</span>
+                    <span class="feature-icon" aria-hidden="true">🌍</span>
                     <h3>13 種語言</h3>
                     <p>支援繁中、簡中、英文、日文、韓文等 13 種語言，全球玩家都能享受。</p>
                 </div>
@@ -925,41 +937,41 @@
             <p class="section-subtitle">每個主題都有 10 種獨特角色，從 Lv.1 進化到 Lv.10</p>
             <div class="theme-grid">
                 <div class="theme-card fruit anim">
-                    <img src="images/screenshot-fruit.jpg" alt="水果主題" loading="lazy">
+                    <picture><source srcset="images/screenshot-fruit.webp" type="image/webp"><img src="images/screenshot-fruit.jpg" alt="水果主題" loading="lazy" width="460" height="999"></picture>
                     <div class="theme-info">
-                        <div class="theme-emoji">🍉</div>
+                        <div class="theme-emoji" aria-hidden="true">🍉</div>
                         <div class="theme-name">水果</div>
                         <div class="theme-desc">櫻桃 → 西瓜</div>
                     </div>
                 </div>
                 <div class="theme-card cat anim">
-                    <img src="images/screenshot-cat.jpg" alt="貓咪主題" loading="lazy">
+                    <picture><source srcset="images/screenshot-cat.webp" type="image/webp"><img src="images/screenshot-cat.jpg" alt="貓咪主題" loading="lazy" width="460" height="999"></picture>
                     <div class="theme-info">
-                        <div class="theme-emoji">🐱</div>
+                        <div class="theme-emoji" aria-hidden="true">🐱</div>
                         <div class="theme-name">貓咪</div>
                         <div class="theme-desc">小奶貓 → 貓皇</div>
                     </div>
                 </div>
                 <div class="theme-card food anim">
-                    <img src="images/screenshot-food.jpg" alt="美食主題" loading="lazy">
+                    <picture><source srcset="images/screenshot-food.webp" type="image/webp"><img src="images/screenshot-food.jpg" alt="美食主題" loading="lazy" width="460" height="999"></picture>
                     <div class="theme-info">
-                        <div class="theme-emoji">🍜</div>
+                        <div class="theme-emoji" aria-hidden="true">🍜</div>
                         <div class="theme-name">美食</div>
                         <div class="theme-desc">珍奶 → 雞排</div>
                     </div>
                 </div>
                 <div class="theme-card career anim">
-                    <img src="images/screenshot-career.jpg" alt="職業主題" loading="lazy">
+                    <picture><source srcset="images/screenshot-career.webp" type="image/webp"><img src="images/screenshot-career.jpg" alt="職業主題" loading="lazy" width="460" height="999"></picture>
                     <div class="theme-info">
-                        <div class="theme-emoji">💼</div>
+                        <div class="theme-emoji" aria-hidden="true">💼</div>
                         <div class="theme-name">職業</div>
                         <div class="theme-desc">實習生 → CEO</div>
                     </div>
                 </div>
                 <div class="theme-card trash anim">
-                    <img src="images/screenshot-trash.jpg" alt="垃圾主題" loading="lazy">
+                    <picture><source srcset="images/screenshot-trash.webp" type="image/webp"><img src="images/screenshot-trash.jpg" alt="垃圾主題" loading="lazy" width="460" height="999"></picture>
                     <div class="theme-info">
-                        <div class="theme-emoji">🗑️</div>
+                        <div class="theme-emoji" aria-hidden="true">🗑️</div>
                         <div class="theme-name">垃圾</div>
                         <div class="theme-desc">糖果紙 → 冰箱</div>
                     </div>
@@ -973,11 +985,11 @@
             <p class="section-subtitle">連續合體，分數翻倍！越快越強！</p>
             <div class="combo-chain">
                 <div class="combo-badge combo-nice">NICE</div>
-                <span class="combo-arrow">→</span>
+                <span class="combo-arrow" aria-hidden="true">→</span>
                 <div class="combo-badge combo-great">GREAT</div>
-                <span class="combo-arrow">→</span>
+                <span class="combo-arrow" aria-hidden="true">→</span>
                 <div class="combo-badge combo-amazing">AMAZING</div>
-                <span class="combo-arrow">→</span>
+                <span class="combo-arrow" aria-hidden="true">→</span>
                 <div class="combo-badge combo-incredible">INCREDIBLE</div>
             </div>
             <p class="combo-multiplier">最高可達 <span>5x</span> 分數倍率</p>
@@ -986,8 +998,8 @@
         <!-- Final CTA (#7) -->
         <section class="final-cta anim">
             <h2 class="section-title">準備好開始合體了嗎？</h2>
-            <p class="section-subtitle">免費下載，開始你的合體冒險</p>
-            <a href="#" class="btn-appstore coming-soon">
+            <p class="section-subtitle">搶先追蹤，上架第一時間通知你</p>
+            <a href="#" class="btn-appstore coming-soon" aria-disabled="true" tabindex="-1" role="button">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
                 即將上架 App Store
             </a>
