@@ -309,9 +309,13 @@
             width: 100%;
             height: auto;
             display: block;
-            /* Fade top and bottom edges into background */
-            mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+            /* Fade all edges into background */
+            mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%),
+                        linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+            mask-composite: intersect;
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%),
+                               linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+            -webkit-mask-composite: source-in;
         }
 
         .btn-appstore {
