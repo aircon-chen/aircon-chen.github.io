@@ -296,12 +296,12 @@
             font-weight: 500;
         }
 
-        /* Characters image from app icon */
+        /* Characters hero image */
         .hero-characters {
             position: relative;
             z-index: 1;
-            width: 130%;
-            max-width: 1100px;
+            width: 100%;
+            max-width: 1200px;
             margin-top: auto;
             flex-shrink: 0;
         }
@@ -309,13 +309,9 @@
             width: 100%;
             height: auto;
             display: block;
-            /* Mask rounded corners: fade edges into background */
-            mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 85%, transparent 100%),
-                        linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
-            mask-composite: intersect;
-            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 85%, transparent 100%),
-                               linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
-            -webkit-mask-composite: source-in;
+            /* Fade top and bottom edges into background */
+            mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
         }
 
         .btn-appstore {
@@ -750,7 +746,7 @@
                 font-size: 0.9rem;
             }
             .hero-characters {
-                width: 140%;
+                width: 160%;
             }
             .section-title {
                 font-size: 1.6rem;
@@ -829,7 +825,7 @@
                 <span class="hero-sub">免費遊玩 · 5 種主題 · 13 種語言</span>
             </div>
             <div class="hero-characters">
-                <img src="images/app-icon.png" alt="Plumble 遊戲角色">
+                <img src="images/hero-characters.jpg" alt="Plumble 遊戲角色">
             </div>
         </section>
 
