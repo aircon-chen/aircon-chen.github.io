@@ -438,7 +438,7 @@
         }
         .phone-screen img,
         .phone-screen picture { width: 100%; display: block; }
-        .phone-screen picture img { width: 100%; display: block; }
+        .phone-screen picture img { width: 100%; height: auto; display: block; }
         .phone-label {
             text-align: center;
             margin-top: 14px;
@@ -559,6 +559,7 @@
         .theme-card picture { display: block; }
         .theme-card img {
             width: 100%;
+            height: auto;
             aspect-ratio: 16/10;
             object-fit: cover;
             object-position: center top;
@@ -735,37 +736,42 @@
         }
         .lang-switcher-btn {
             background: none;
-            border: 1px solid var(--border);
+            border: 1px solid rgba(255,255,255,0.15);
             color: var(--secondary);
-            padding: 4px 12px;
-            border-radius: 6px;
+            padding: 5px 12px;
+            border-radius: 8px;
             font-size: 0.8rem;
             cursor: pointer;
-            transition: color 0.2s ease, border-color 0.2s ease;
+            transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+            white-space: nowrap;
         }
         .lang-switcher-btn:hover {
             color: var(--text);
             border-color: var(--accent);
+            background: rgba(191, 90, 242, 0.08);
         }
         .lang-dropdown {
             display: none;
             position: absolute;
-            bottom: 100%;
+            top: 100%;
             right: 0;
-            background: var(--card);
+            margin-top: 8px;
+            background: rgba(20, 24, 50, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 8px 0;
-            min-width: 150px;
-            max-height: 300px;
+            min-width: 160px;
+            max-height: 320px;
             overflow-y: auto;
             z-index: 200;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
         }
         .lang-dropdown.open { display: block; }
         .lang-dropdown a {
             display: block;
-            padding: 6px 16px;
+            padding: 8px 16px;
             color: var(--secondary);
             text-decoration: none;
             font-size: 0.85rem;
@@ -894,6 +900,10 @@
                 <li><a href="#features">Fonctionnalités</a></li>
                 <li><a href="#themes">Thèmes</a></li>
                 <li><span class="nav-download">Bientôt disponible</span></li>
+                <li class="lang-switcher">
+                    <button class="lang-switcher-btn" id="langBtn" aria-label="Switch language">🌐 Français ▾</button>
+                    <div class="lang-dropdown" id="langDropdown"></div>
+                </li>
             </ul>
         </div>
     </nav>
@@ -1092,10 +1102,6 @@
         <div class="footer-links">
             <a href="../privacy.html">Politique de confidentialité</a>
             <a href="../" rel="noopener">Retour au site principal</a>
-            <div class="lang-switcher">
-                <button class="lang-switcher-btn" id="langBtn" aria-label="Switch language">Français ▾</button>
-                <div class="lang-dropdown" id="langDropdown"></div>
-            </div>
         </div>
     </footer>
 
