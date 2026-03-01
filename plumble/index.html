@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plumble — 超好玩物理合併遊戲 | 5 種主題 x Combo 連鎖</title>
+    <meta name="description" content="Plumble 是一款充滿歡樂的物理合併遊戲。丟下可愛角色，碰撞合體進化，挑戰你的最高分！5 種主題、Combo 連鎖、支援 13 種語言。">
+    <meta name="theme-color" content="#0A0E23">
+    <meta property="og:title" content="Plumble — 超好玩物理合併遊戲 | 5 種主題 x Combo 連鎖">
+    <meta property="og:description" content="充滿歡樂的物理合併遊戲。丟下可愛角色，碰撞合體進化，挑戰你的最高分！">
+    <meta property="og:image" content="https://aircon-chen.github.io/plumble/images/app-icon.png">
+    <meta property="og:url" content="https://aircon-chen.github.io/plumble/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Plumble — 超好玩物理合併遊戲">
+    <meta name="twitter:description" content="充滿歡樂的物理合併遊戲。5 種主題、Combo 連鎖、搖晃物理效果。">
+    <meta name="twitter:image" content="https://aircon-chen.github.io/plumble/images/app-icon.png">
+    <link rel="canonical" href="https://aircon-chen.github.io/plumble/">
+    <link rel="icon" type="image/png" href="images/app-icon.png">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Plumble",
+        "operatingSystem": "iOS",
+        "applicationCategory": "GameApplication",
+        "description": "丟下、碰撞、合體！充滿歡樂的物理合併遊戲。5 種主題、Combo 連鎖、支援 13 種語言。",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "TWD"
+        },
+        "author": {
+            "@type": "Person",
+            "name": "Aircon Chen",
+            "url": "https://aircon-chen.github.io"
+        },
+        "image": "https://aircon-chen.github.io/plumble/images/app-icon.png"
+    }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0A0E23;
+            --bg-alt: #0F1330;
+            --card: #141832;
+            --accent: #BF5AF2;
+            --accent2: #5E5CE6;
+            --fruit: #FF6B6B;
+            --cat: #FFB347;
+            --food: #4ECDC4;
+            --career: #45B7D1;
+            --trash: #95A5A6;
+            --text: #E8E7FF;
+            --secondary: #9D9AE8;
+            --border: rgba(191, 90, 242, 0.15);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Ambient glow */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -40%;
+            left: -20%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(ellipse, rgba(191,90,242,0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            right: -20%;
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(ellipse, rgba(94,92,230,0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Focus styles (#9) */
+        a:focus-visible, button:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        /* ======================== */
+        /* NAV                      */
+        /* ======================== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 16px 24px;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+        nav.scrolled {
+            background: rgba(10, 14, 35, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 1px 0 var(--border);
+        }
+        nav .nav-inner {
+            max-width: 1080px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        nav .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        nav .nav-brand img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+        }
+        nav .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+            align-items: center;
+        }
+        nav .nav-links a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        nav .nav-links a:hover {
+            color: var(--text);
+        }
+        /* Nav download button */
+        nav .nav-links .nav-download {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+            box-shadow: 0 2px 8px rgba(191, 90, 242, 0.25);
+            cursor: default;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        nav .nav-links .nav-download:hover {
+            color: #fff;
+        }
+
+        /* ======================== */
+        /* HERO                     */
+        /* ======================== */
+        .hero {
+            text-align: center;
+            padding: 160px 0 80px;
+            position: relative;
+        }
+
+        /* Floating particles */
+        .hero-particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: float-particle linear infinite;
+            opacity: 0.4;
+            will-change: transform;
+        }
+        @keyframes float-particle {
+            0% { transform: translateY(100vh) rotate(0deg) scale(0); opacity: 0; }
+            10% { opacity: 0.4; transform: translateY(80vh) rotate(36deg) scale(1); }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-10vh) rotate(360deg) scale(0.5); opacity: 0; }
+        }
+
+        .hero-icon {
+            width: 140px;
+            height: 140px;
+            border-radius: 32px;
+            box-shadow: 0 16px 48px rgba(191, 90, 242, 0.25), 0 4px 16px rgba(0,0,0,0.4);
+            margin-bottom: 28px;
+            animation: hero-bounce 3s ease-in-out infinite;
+        }
+        @keyframes hero-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .hero h1 {
+            font-size: 3.6rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, #FF6B6B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+
+        .hero .tagline {
+            font-size: 1.4rem;
+            color: var(--text);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .hero .tagline-sub {
+            font-size: 1.05rem;
+            color: var(--secondary);
+            margin-bottom: 36px;
+            font-weight: 400;
+            max-width: 520px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .hero .cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-appstore {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .btn-appstore svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+        /* Coming soon state (#1) */
+        .btn-appstore.coming-soon {
+            background: linear-gradient(135deg, #4A4A6A, #3A3A5A);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .hero-sub {
+            display: inline-block;
+            margin-top: 24px;
+            font-size: 0.9rem;
+            color: var(--accent);
+            background: rgba(191, 90, 242, 0.1);
+            padding: 6px 18px;
+            border-radius: 20px;
+            border: 1px solid rgba(191, 90, 242, 0.2);
+            font-weight: 500;
+        }
+
+        /* Hero phones (#5) */
+        .hero-phones {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 48px;
+            perspective: 1000px;
+        }
+        .hero-phone {
+            width: 160px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+            border: 2px solid rgba(255,255,255,0.06);
+            transition: transform 0.4s ease;
+        }
+        .hero-phone img {
+            width: 100%;
+            display: block;
+        }
+        .hero-phone:nth-child(1) {
+            transform: rotateY(8deg) rotateX(2deg) translateY(12px);
+        }
+        .hero-phone:nth-child(2) {
+            transform: scale(1.08) translateY(-4px);
+            z-index: 2;
+            box-shadow: 0 24px 64px rgba(191, 90, 242, 0.2), 0 8px 32px rgba(0,0,0,0.4);
+        }
+        .hero-phone:nth-child(3) {
+            transform: rotateY(-8deg) rotateX(2deg) translateY(12px);
+        }
+
+        /* ======================== */
+        /* SCREENSHOTS              */
+        /* ======================== */
+        .screenshots {
+            padding: 80px 0;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--text), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .section-subtitle {
+            text-align: center;
+            color: var(--secondary);
+            font-size: 1.05rem;
+            margin-bottom: 48px;
+        }
+
+        .screenshot-carousel {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            padding: 20px 0 40px;
+            scrollbar-width: none;
+            max-width: 100%;
+            justify-content: center;
+        }
+        .screenshot-carousel::-webkit-scrollbar { display: none; }
+
+        .phone-frame {
+            flex: 0 0 auto;
+            scroll-snap-align: center;
+            width: 260px;
+            position: relative;
+        }
+        .phone-bezel {
+            background: #1A1E3A;
+            border-radius: 32px;
+            padding: 12px;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+        }
+        .phone-bezel:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 24px 64px rgba(191, 90, 242, 0.15), 0 8px 32px rgba(0,0,0,0.5);
+        }
+        /* Dynamic Island notch (#23) */
+        .phone-notch {
+            width: 50px;
+            height: 14px;
+            background: #0A0E23;
+            border-radius: 7px;
+            margin: 4px auto 8px;
+        }
+        .phone-screen {
+            border-radius: 20px;
+            overflow: hidden;
+            background: #000;
+        }
+        .phone-screen img {
+            width: 100%;
+            display: block;
+        }
+        .phone-label {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 0.9rem;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+
+        .screenshot-track {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Desktop: wrap screenshots instead of scroll */
+        @media (min-width: 901px) {
+            .screenshot-carousel {
+                flex-wrap: wrap;
+                justify-content: center;
+                overflow-x: visible;
+            }
+        }
+
+        /* ======================== */
+        /* FEATURES                 */
+        /* ======================== */
+        .features {
+            padding: 80px 0;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .feature-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px 24px;
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.4s ease, border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(191,90,242,0.04), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(191, 90, 242, 0.1), 0 4px 16px rgba(0,0,0,0.2);
+            border-color: rgba(191, 90, 242, 0.25);
+        }
+        .feature-card:hover::before { opacity: 1; }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 14px;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+        .feature-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+        .feature-card p {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ======================== */
+        /* THEMES                   */
+        /* ======================== */
+        .themes {
+            padding: 80px 0;
+            background: var(--bg-alt);
+            margin: 0 -24px;
+            padding-left: 24px;
+            padding-right: 24px;
+        }
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+        }
+        .theme-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.4s ease, border-color 0.3s ease;
+            position: relative;
+        }
+        .theme-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+        }
+        .theme-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(to top, rgba(10, 14, 35, 0.95), transparent);
+            pointer-events: none;
+        }
+        /* Theme image aspect ratio fix (#6) */
+        .theme-card img {
+            width: 100%;
+            aspect-ratio: 16/10;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+        }
+        .theme-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            z-index: 2;
+            text-align: center;
+        }
+        .theme-emoji {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+        .theme-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .theme-desc {
+            font-size: 0.75rem;
+            color: var(--secondary);
+            margin-top: 2px;
+        }
+
+        /* Theme card accent borders on hover */
+        .theme-card.fruit:hover { border-color: var(--fruit); box-shadow: 0 16px 48px rgba(255, 107, 107, 0.15); }
+        .theme-card.cat:hover { border-color: var(--cat); box-shadow: 0 16px 48px rgba(255, 179, 71, 0.15); }
+        .theme-card.food:hover { border-color: var(--food); box-shadow: 0 16px 48px rgba(78, 205, 196, 0.15); }
+        .theme-card.career:hover { border-color: var(--career); box-shadow: 0 16px 48px rgba(69, 183, 209, 0.15); }
+        .theme-card.trash:hover { border-color: var(--trash); box-shadow: 0 16px 48px rgba(149, 165, 166, 0.15); }
+
+        /* Coming soon overlay for trash (#2) */
+        .theme-card.coming-soon {
+            opacity: 0.65;
+        }
+        .theme-card.coming-soon .coming-soon-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            background: rgba(10, 14, 35, 0.85);
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--secondary);
+            border: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        /* ======================== */
+        /* COMBO SECTION            */
+        /* ======================== */
+        .combo {
+            padding: 80px 0;
+            text-align: center;
+        }
+        .combo-chain {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        .combo-badge {
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            border: 1px solid transparent;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: combo-pulse 2.5s ease-in-out infinite;
+        }
+        .combo-badge:hover {
+            transform: scale(1.08);
+        }
+        @keyframes combo-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 transparent; }
+            50% { box-shadow: 0 0 12px 2px currentColor; }
+        }
+        .combo-nice {
+            animation-delay: 0s;
+            background: rgba(78, 205, 196, 0.12);
+            color: #4ECDC4;
+            border-color: rgba(78, 205, 196, 0.25);
+        }
+        .combo-great {
+            background: rgba(69, 183, 209, 0.12);
+            color: #45B7D1;
+            border-color: rgba(69, 183, 209, 0.25);
+            animation-delay: 0.3s;
+        }
+        .combo-amazing {
+            background: rgba(191, 90, 242, 0.12);
+            color: #BF5AF2;
+            border-color: rgba(191, 90, 242, 0.25);
+            animation-delay: 0.6s;
+        }
+        .combo-incredible {
+            background: rgba(255, 107, 107, 0.12);
+            color: #FF6B6B;
+            border-color: rgba(255, 107, 107, 0.25);
+            animation-delay: 0.9s;
+        }
+        .combo-arrow {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            opacity: 0.5;
+        }
+        .combo-multiplier {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: var(--secondary);
+        }
+        .combo-multiplier span {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* ======================== */
+        /* FINAL CTA (#7)           */
+        /* ======================== */
+        .final-cta {
+            padding: 80px 0;
+            text-align: center;
+        }
+        .final-cta .section-title {
+            margin-bottom: 12px;
+        }
+        .final-cta .section-subtitle {
+            margin-bottom: 32px;
+        }
+
+        /* ======================== */
+        /* FOOTER                   */
+        /* ======================== */
+        footer {
+            text-align: center;
+            padding: 48px 24px;
+            border-top: 1px solid var(--border);
+            position: relative;
+            z-index: 1;
+        }
+        footer p {
+            color: var(--secondary);
+            font-size: 0.85rem;
+        }
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        footer a:hover {
+            color: var(--text);
+            text-decoration: underline;
+        }
+        footer .footer-links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        /* ======================== */
+        /* ANIMATIONS               */
+        /* ======================== */
+        .anim {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .anim.anim.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* Staggered hero animation (#26) */
+        .hero .hero-stagger {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .hero.visible .hero-stagger {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .hero.visible .hero-stagger:nth-child(1) { transition-delay: 0s; }
+        .hero.visible .hero-stagger:nth-child(2) { transition-delay: 0.12s; }
+        .hero.visible .hero-stagger:nth-child(3) { transition-delay: 0.24s; }
+        .hero.visible .hero-stagger:nth-child(4) { transition-delay: 0.36s; }
+        .hero.visible .hero-stagger:nth-child(5) { transition-delay: 0.48s; }
+        .hero.visible .hero-stagger:nth-child(6) { transition-delay: 0.60s; }
+        .hero.visible .hero-stagger:nth-child(7) { transition-delay: 0.72s; }
+
+        /* Reduced motion (#8) */
+        @media (prefers-reduced-motion: reduce) {
+            .particle { display: none; }
+            .hero-icon { animation: none; }
+            .combo-badge { animation: none; }
+            .anim { opacity: 1; transform: none; transition: none; }
+            .hero .hero-stagger { opacity: 1; transform: none; transition: none; }
+            html { scroll-behavior: auto; }
+        }
+
+        /* ======================== */
+        /* RESPONSIVE               */
+        /* ======================== */
+        @media (max-width: 900px) {
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .theme-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .hero-phones {
+                gap: 10px;
+            }
+            .hero-phone {
+                width: 120px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero {
+                padding: 130px 0 60px;
+            }
+            .hero-icon {
+                width: 100px;
+                height: 100px;
+                border-radius: 24px;
+            }
+            .hero h1 {
+                font-size: 2.4rem;
+            }
+            .hero .tagline {
+                font-size: 1.1rem;
+            }
+            .hero .tagline-sub {
+                font-size: 0.95rem;
+            }
+            .section-title {
+                font-size: 1.6rem;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            .theme-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .theme-grid .theme-card:last-child {
+                grid-column: span 2;
+            }
+            .phone-frame {
+                width: 220px;
+            }
+            nav .nav-links {
+                gap: 12px;
+            }
+            nav .nav-links a {
+                font-size: 0.8rem;
+            }
+            nav .nav-links .nav-download {
+                padding: 5px 12px;
+                font-size: 0.75rem;
+            }
+            .combo-chain {
+                gap: 8px;
+            }
+            .combo-badge {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+            .hero-phones {
+                gap: 8px;
+                margin-top: 36px;
+            }
+            .hero-phone {
+                width: 100px;
+                border-radius: 14px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .theme-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar" aria-label="主要導覽">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-brand">
+                <img src="images/app-icon.png" alt="Plumble">
+                Plumble
+            </a>
+            <ul class="nav-links">
+                <li><a href="#screenshots">截圖</a></li>
+                <li><a href="#features">特色</a></li>
+                <li><a href="#themes">主題</a></li>
+                <li><span class="nav-download">即將上架</span></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+    <div class="container">
+
+        <!-- Hero Section -->
+        <section class="hero anim" id="hero">
+            <div class="hero-particles" id="particles"></div>
+            <img src="images/app-icon.png" alt="Plumble App Icon" class="hero-icon hero-stagger">
+            <h1 class="hero-stagger">Plumble</h1>
+            <p class="tagline hero-stagger">丟下、碰撞、合體！停不下來的物理合併遊戲</p>
+            <p class="tagline-sub hero-stagger">可愛角色 x 物理碰撞 x Combo 連鎖 — 你能撐到 Lv.10 大爆炸嗎？</p>
+            <div class="cta-group hero-stagger">
+                <a href="#" class="btn-appstore coming-soon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
+                    即將上架 App Store
+                </a>
+            </div>
+            <span class="hero-sub hero-stagger">免費遊玩 · 無干擾廣告</span>
+            <!-- Hero phone showcase (#5) -->
+            <div class="hero-phones hero-stagger">
+                <div class="hero-phone">
+                    <img src="images/screenshot-gameplay1.png" alt="遊戲畫面" loading="lazy">
+                </div>
+                <div class="hero-phone">
+                    <img src="images/screenshot-gameplay3.png" alt="Lv.10 大爆炸">
+                </div>
+                <div class="hero-phone">
+                    <img src="images/screenshot-gameplay2.png" alt="Combo 連鎖" loading="lazy">
+                </div>
+            </div>
+        </section>
+
+        <!-- Screenshots Section -->
+        <section class="screenshots anim" id="screenshots">
+            <h2 class="section-title">遊戲畫面</h2>
+            <p class="section-subtitle">簡單操作，無限樂趣</p>
+            <div class="screenshot-track">
+                <div class="screenshot-carousel">
+                    <div class="phone-frame">
+                        <div class="phone-bezel">
+                            <div class="phone-notch"></div>
+                            <div class="phone-screen">
+                                <img src="images/screenshot-menu.png" alt="主選單" loading="lazy">
+                            </div>
+                        </div>
+                        <div class="phone-label">主選單</div>
+                    </div>
+                    <div class="phone-frame">
+                        <div class="phone-bezel">
+                            <div class="phone-notch"></div>
+                            <div class="phone-screen">
+                                <img src="images/screenshot-gameplay1.png" alt="遊戲畫面" loading="lazy">
+                            </div>
+                        </div>
+                        <div class="phone-label">遊戲進行中</div>
+                    </div>
+                    <div class="phone-frame">
+                        <div class="phone-bezel">
+                            <div class="phone-notch"></div>
+                            <div class="phone-screen">
+                                <img src="images/screenshot-gameplay2.png" alt="Combo 連鎖" loading="lazy">
+                            </div>
+                        </div>
+                        <div class="phone-label">Combo 連鎖</div>
+                    </div>
+                    <div class="phone-frame">
+                        <div class="phone-bezel">
+                            <div class="phone-notch"></div>
+                            <div class="phone-screen">
+                                <img src="images/screenshot-gameplay3.png" alt="Lv.10 大爆炸" loading="lazy">
+                            </div>
+                        </div>
+                        <div class="phone-label">Lv.10 大爆炸</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features anim" id="features">
+            <h2 class="section-title">遊戲特色</h2>
+            <p class="section-subtitle">簡單上手，停不下來</p>
+            <div class="feature-grid">
+                <div class="feature-card anim">
+                    <span class="feature-icon">🔥</span>
+                    <h3>Combo 連鎖系統</h3>
+                    <p>連續合體觸發 NICE → GREAT → AMAZING → INCREDIBLE，最高 5 倍分數加成！</p>
+                </div>
+                <div class="feature-card anim">
+                    <span class="feature-icon">🎨</span>
+                    <h3>5 大主題</h3>
+                    <p>水果、貓咪、美食、職業、垃圾，每種主題都有獨特角色等你收集進化。</p>
+                </div>
+                <div class="feature-card anim">
+                    <span class="feature-icon">📱</span>
+                    <h3>搖晃物理效果</h3>
+                    <p>搖晃或傾斜手機，讓場上的角色重新排列，創造更多合體機會！</p>
+                </div>
+                <div class="feature-card anim">
+                    <span class="feature-icon">💥</span>
+                    <h3>Lv.10 超級爆炸</h3>
+                    <p>合體到最高等級觸發大爆炸，清除全場 +5000 分，視覺效果超震撼！</p>
+                </div>
+                <div class="feature-card anim">
+                    <span class="feature-icon">♾️</span>
+                    <h3>挑戰不中斷</h3>
+                    <p>失敗了也能繼續奮戰，不怕前功盡棄！挑戰你的最高分紀錄。</p>
+                </div>
+                <div class="feature-card anim">
+                    <span class="feature-icon">🌍</span>
+                    <h3>13 種語言</h3>
+                    <p>支援繁中、簡中、英文、日文、韓文等 13 種語言，全球玩家都能享受。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Theme Showcase -->
+        <section class="themes anim" id="themes">
+            <h2 class="section-title">五大主題世界</h2>
+            <p class="section-subtitle">每個主題都有 10 種獨特角色，從 Lv.1 進化到 Lv.10</p>
+            <div class="theme-grid">
+                <div class="theme-card fruit anim">
+                    <img src="images/screenshot-fruit.png" alt="水果主題" loading="lazy">
+                    <div class="theme-info">
+                        <div class="theme-emoji">🍉</div>
+                        <div class="theme-name">水果</div>
+                        <div class="theme-desc">櫻桃 → 西瓜</div>
+                    </div>
+                </div>
+                <div class="theme-card cat anim">
+                    <img src="images/screenshot-cat.png" alt="貓咪主題" loading="lazy">
+                    <div class="theme-info">
+                        <div class="theme-emoji">🐱</div>
+                        <div class="theme-name">貓咪</div>
+                        <div class="theme-desc">小奶貓 → 貓皇</div>
+                    </div>
+                </div>
+                <div class="theme-card food anim">
+                    <img src="images/screenshot-food.png" alt="美食主題" loading="lazy">
+                    <div class="theme-info">
+                        <div class="theme-emoji">🍜</div>
+                        <div class="theme-name">美食</div>
+                        <div class="theme-desc">珍奶 → 雞排</div>
+                    </div>
+                </div>
+                <div class="theme-card career anim">
+                    <img src="images/screenshot-career.png" alt="職業主題" loading="lazy">
+                    <div class="theme-info">
+                        <div class="theme-emoji">💼</div>
+                        <div class="theme-name">職業</div>
+                        <div class="theme-desc">實習生 → CEO</div>
+                    </div>
+                </div>
+                <div class="theme-card trash coming-soon anim">
+                    <img src="images/screenshot-fruit.png" alt="垃圾主題" loading="lazy">
+                    <div class="coming-soon-badge">即將推出</div>
+                    <div class="theme-info">
+                        <div class="theme-emoji">🗑️</div>
+                        <div class="theme-name">垃圾</div>
+                        <div class="theme-desc">糖果紙 → 冰箱</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Combo Section -->
+        <section class="combo anim" id="combo">
+            <h2 class="section-title">Combo 連鎖爆發</h2>
+            <p class="section-subtitle">連續合體，分數翻倍！越快越強！</p>
+            <div class="combo-chain">
+                <div class="combo-badge combo-nice">NICE</div>
+                <span class="combo-arrow">→</span>
+                <div class="combo-badge combo-great">GREAT</div>
+                <span class="combo-arrow">→</span>
+                <div class="combo-badge combo-amazing">AMAZING</div>
+                <span class="combo-arrow">→</span>
+                <div class="combo-badge combo-incredible">INCREDIBLE</div>
+            </div>
+            <p class="combo-multiplier">最高可達 <span>5x</span> 分數倍率</p>
+        </section>
+
+        <!-- Final CTA (#7) -->
+        <section class="final-cta anim">
+            <h2 class="section-title">準備好開始合體了嗎？</h2>
+            <p class="section-subtitle">免費下載，開始你的合體冒險</p>
+            <a href="#" class="btn-appstore coming-soon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
+                即將上架 App Store
+            </a>
+        </section>
+
+    </div>
+    </main>
+
+    <!-- Footer outside .container (#29) -->
+    <footer class="anim">
+        <p>&copy; 2026 Aircon Chen</p>
+        <div class="footer-links">
+            <a href="privacy.html">隱私政策</a>
+            <a href="../" rel="noopener">返回主站</a>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer with fallback (#24)
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.anim').forEach(function(el, i) {
+                el.style.transitionDelay = (i * 0.08) + 's';
+                observer.observe(el);
+            });
+        } else {
+            // Fallback: show everything immediately
+            document.querySelectorAll('.anim').forEach(function(el) {
+                el.classList.add('visible');
+            });
+        }
+
+        // Nav scroll effect (#18 passive listener)
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 40) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        }, { passive: true });
+
+        // Floating particles (reduced to 12, #20)
+        (function() {
+            const container = document.getElementById('particles');
+            const colors = ['#FF6B6B', '#FFB347', '#4ECDC4', '#BF5AF2', '#5E5CE6', '#45B7D1'];
+            for (let i = 0; i < 12; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const size = Math.random() * 8 + 4;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                p.style.animationDuration = (Math.random() * 12 + 10) + 's';
+                p.style.animationDelay = (Math.random() * 8) + 's';
+                container.appendChild(p);
+            }
+        })();
+    </script>
+<!-- Cloudflare Web Analytics (#25) --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "74a8ba2b053b4b4685ea06b84af714ae"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

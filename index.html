@@ -187,9 +187,9 @@
             opacity: 0;
             transform: translateY(30px);
         }
-        .anim.visible {
-            opacity: 1 !important;
-            transform: translateY(0) !important;
+        .anim.anim.visible {
+            opacity: 1;
+            transform: translateY(0);
             transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
                         transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
         }
@@ -210,6 +210,12 @@
             text-decoration: underline;
         }
 
+        a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .anim { opacity: 1; transform: none; transition: none; }
+        }
+
         @media (max-width: 600px) {
             header { padding: 60px 0 30px; }
             header h1 { font-size: 1.8rem; }
@@ -227,6 +233,15 @@
         </header>
 
         <div class="app-grid">
+            <a href="plumble/" class="app-card anim">
+                <img src="plumble/images/app-icon.png" alt="Plumble App Icon" class="app-icon">
+                <div class="app-name">Plumble</div>
+                <div class="app-tagline">丟下可愛角色、碰撞合體進化！5 種主題世界、Combo 連鎖爆發、搖晃手機重新洗牌，你能撐到 Lv.10 大爆炸嗎？</div>
+                <div class="app-badges">
+                    <span class="app-badge badge-coming">Coming Soon</span>
+                </div>
+            </a>
+
             <a href="sightreading/" class="app-card anim">
                 <img src="sightreading/app-icon.png" alt="SightReading App Icon" class="app-icon">
                 <div class="app-name">SightReading</div>
@@ -244,7 +259,7 @@
     </div>
 
     <script>
-        var observer = new IntersectionObserver(function(entries) {
+        const observer = new IntersectionObserver(function(entries) {
             entries.forEach(function(entry) {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
