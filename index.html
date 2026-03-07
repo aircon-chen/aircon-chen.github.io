@@ -3,17 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aircon Chen - Apps</title>
+    <title>Aircon Chen - Indie App Developer</title>
+    <meta name="description" content="Indie developer crafting delightful iOS and Android apps. Creator of SightReading and Plumble.">
+    <meta property="og:title" content="Aircon Chen - Indie App Developer">
+    <meta property="og:description" content="Indie developer crafting delightful iOS and Android apps.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aircon-chen.github.io">
+    <meta property="og:image" content="https://aircon-chen.github.io/sightreading/app-icon.png">
+    <link rel="icon" type="image/png" href="sightreading/app-icon.png">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --bg: #0A0E23;
+            --surface: #111633;
             --card: #141832;
             --accent: #BF5AF2;
+            --accent2: #5E5CE6;
+            --green: #34A853;
             --text: #E8E7FF;
             --secondary: #9D9AE8;
-            --border: rgba(191, 90, 242, 0.15);
+            --muted: #6B6AA0;
+            --border: rgba(191, 90, 242, 0.12);
         }
 
         body {
@@ -28,24 +39,18 @@
         body::before {
             content: '';
             position: fixed;
-            top: -40%;
-            left: -20%;
-            width: 80%;
-            height: 80%;
+            top: -40%; left: -20%;
+            width: 80%; height: 80%;
             background: radial-gradient(ellipse, rgba(191,90,242,0.06) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
+            pointer-events: none; z-index: 0;
         }
         body::after {
             content: '';
             position: fixed;
-            bottom: -30%;
-            right: -20%;
-            width: 70%;
-            height: 70%;
+            bottom: -30%; right: -20%;
+            width: 70%; height: 70%;
             background: radial-gradient(ellipse, rgba(94,92,230,0.05) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
+            pointer-events: none; z-index: 0;
         }
 
         .container {
@@ -56,13 +61,23 @@
             z-index: 1;
         }
 
-        /* Header */
-        header {
+        /* ---- Hero ---- */
+        .hero {
             text-align: center;
-            padding: 80px 0 40px;
+            padding: 100px 0 60px;
         }
-        header h1 {
+        .hero-avatar {
+            width: 88px; height: 88px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 24px;
             font-size: 2.4rem;
+            color: #fff;
+            box-shadow: 0 8px 32px rgba(191,90,242,0.25);
+        }
+        .hero h1 {
+            font-size: 2.6rem;
             font-weight: 700;
             letter-spacing: -0.5px;
             background: linear-gradient(135deg, var(--text), var(--accent));
@@ -70,144 +85,186 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        header p {
+        .hero .subtitle {
             color: var(--secondary);
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             margin-top: 12px;
+            line-height: 1.6;
+        }
+        .hero .links {
+            margin-top: 20px;
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+        .hero .links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+        .hero .links a:hover { color: var(--accent); }
+        .hero .links svg { width: 18px; height: 18px; fill: currentColor; }
+
+        /* ---- Section ---- */
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 28px;
         }
 
-        /* App Grid */
+        /* ---- App Card ---- */
         .app-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 28px;
-            padding: 40px 0 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            padding-bottom: 80px;
         }
 
-        /* App Card */
         .app-card {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 32px 28px;
+            border-radius: 24px;
             text-decoration: none;
             color: inherit;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
             transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
                         box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
                         border-color 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .app-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(191,90,242,0.05), transparent 60%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
         .app-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 60px rgba(191, 90, 242, 0.12), 0 4px 20px rgba(0,0,0,0.3);
-            border-color: rgba(191, 90, 242, 0.3);
-        }
-        .app-card:hover::before {
-            opacity: 1;
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(191,90,242,0.1), 0 4px 20px rgba(0,0,0,0.3);
+            border-color: rgba(191,90,242,0.25);
         }
 
+        .app-info {
+            padding: 40px 36px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
         .app-icon {
-            width: 96px;
-            height: 96px;
-            border-radius: 22px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-            position: relative;
-            z-index: 1;
+            width: 72px; height: 72px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            margin-bottom: 16px;
         }
-
         .app-name {
-            font-size: 1.3rem;
-            font-weight: 600;
+            font-size: 1.5rem;
+            font-weight: 700;
             margin-bottom: 8px;
-            position: relative;
-            z-index: 1;
         }
-
         .app-tagline {
             font-size: 0.95rem;
             color: var(--secondary);
-            line-height: 1.5;
-            position: relative;
-            z-index: 1;
+            line-height: 1.6;
+            margin-bottom: 16px;
         }
-
+        .app-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
         .app-badge {
             display: inline-block;
-            margin-top: 16px;
             padding: 4px 12px;
             border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            position: relative;
-            z-index: 1;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
         .badge-ios {
-            background: rgba(191, 90, 242, 0.15);
+            background: rgba(191,90,242,0.12);
             color: var(--accent);
         }
         .badge-android {
-            background: rgba(52, 168, 83, 0.15);
-            color: #34A853;
+            background: rgba(52,168,83,0.12);
+            color: var(--green);
         }
         .badge-coming {
-            background: rgba(62, 106, 225, 0.15);
-            color: #3E6AE1;
-        }
-        .app-badges {
-            display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+            background: rgba(62,106,225,0.12);
+            color: #6B8AFF;
         }
 
-        .app-icon-placeholder {
-            width: 96px; height: 96px; border-radius: 22px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-            position: relative; z-index: 1;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2.2rem;
-            background: linear-gradient(135deg, #111 0%, #1A1A1A 100%);
-            border: 1px solid rgba(255,255,255,0.08);
+        .app-preview {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px 0;
+            min-height: 280px;
+        }
+        .app-preview-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.06;
+            background-size: cover;
+            background-position: center;
+        }
+        .app-preview img {
+            width: 140px;
+            border-radius: 12px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+            position: relative;
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .app-card:hover .app-preview img {
+            transform: translateY(-4px) scale(1.02);
+        }
+        .app-preview .preview-pair {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+        .app-preview .preview-pair img:first-child {
+            transform: rotate(-3deg);
+        }
+        .app-preview .preview-pair img:last-child {
+            transform: rotate(3deg);
+        }
+        .app-card:hover .preview-pair img:first-child {
+            transform: rotate(-3deg) translateY(-4px) scale(1.02);
+        }
+        .app-card:hover .preview-pair img:last-child {
+            transform: rotate(3deg) translateY(-4px) scale(1.02);
         }
 
-        /* Entrance animations */
-        .anim {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        .anim.anim.visible {
-            opacity: 1;
-            transform: translateY(0);
-            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-                        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        /* Footer */
+        /* ---- Footer ---- */
         footer {
             text-align: center;
             padding: 40px 0;
             border-top: 1px solid var(--border);
-            color: var(--secondary);
+        }
+        footer p {
+            color: var(--muted);
             font-size: 0.85rem;
         }
         footer a {
-            color: var(--accent);
+            color: var(--secondary);
             text-decoration: none;
         }
-        footer a:hover {
-            text-decoration: underline;
+        footer a:hover { color: var(--accent); }
+
+        /* ---- Animations ---- */
+        .anim {
+            opacity: 0;
+            transform: translateY(24px);
+        }
+        .anim.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -216,39 +273,93 @@
             .anim { opacity: 1; transform: none; transition: none; }
         }
 
-        @media (max-width: 600px) {
-            header { padding: 60px 0 30px; }
-            header h1 { font-size: 1.8rem; }
-            .app-grid { gap: 20px; padding: 30px 0 60px; }
-            .app-card { padding: 24px 20px; }
-            .app-icon { width: 80px; height: 80px; border-radius: 18px; }
+        /* ---- Responsive ---- */
+        @media (max-width: 700px) {
+            .hero { padding: 70px 0 40px; }
+            .hero h1 { font-size: 2rem; }
+            .hero-avatar { width: 72px; height: 72px; font-size: 2rem; }
+
+            .app-card {
+                grid-template-columns: 1fr;
+            }
+            .app-info {
+                padding: 28px 24px 20px;
+            }
+            .app-preview {
+                min-height: 220px;
+                padding: 12px 16px 0;
+            }
+            .app-preview img { width: 120px; }
+            .app-name { font-size: 1.3rem; }
+        }
+
+        @media (max-width: 400px) {
+            .hero h1 { font-size: 1.7rem; }
+            .hero .subtitle { font-size: 1rem; }
+            .app-info { padding: 24px 20px 16px; }
+            .app-preview img { width: 100px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header class="anim">
+        <!-- Hero -->
+        <section class="hero anim">
+            <div class="hero-avatar">A</div>
             <h1>Aircon Chen</h1>
-            <p>Apps</p>
-        </header>
+            <p class="subtitle">Indie developer crafting delightful apps for iOS & Android</p>
+            <div class="links">
+                <a href="https://github.com/aircon-chen">
+                    <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                    GitHub
+                </a>
+                <a href="mailto:niconi30@gmail.com">
+                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    Email
+                </a>
+            </div>
+        </section>
+
+        <!-- Apps -->
+        <div class="section-label anim">Apps</div>
 
         <div class="app-grid">
-            <a href="plumble/" class="app-card anim">
-                <img src="plumble/images/app-icon.png" alt="Plumble App Icon" class="app-icon">
-                <div class="app-name">Plumble</div>
-                <div class="app-tagline">丟下可愛角色、碰撞合體進化！5 種主題世界、Combo 連鎖爆發、搖晃手機重新洗牌，你能撐到 Lv.10 大爆炸嗎？</div>
-                <div class="app-badges">
-                    <span class="app-badge badge-coming">Coming Soon</span>
+            <!-- SightReading -->
+            <a href="sightreading/" class="app-card anim">
+                <div class="app-info">
+                    <img src="sightreading/app-icon.png" alt="SightReading" class="app-icon">
+                    <div class="app-name">SightReading</div>
+                    <div class="app-tagline">Master sight-reading with interactive piano practice. Train your musical notation skills one note at a time.</div>
+                    <div class="app-badges">
+                        <span class="app-badge badge-ios">iOS</span>
+                        <span class="app-badge badge-android">Android</span>
+                    </div>
+                </div>
+                <div class="app-preview">
+                    <div class="app-preview-bg" style="background-image:url(sightreading/screenshots/en/practice.png)"></div>
+                    <div class="preview-pair">
+                        <img src="sightreading/screenshots/en/practice.png" alt="SightReading practice screen" loading="lazy">
+                        <img src="sightreading/screenshots/en/challenge.png" alt="SightReading challenge screen" loading="lazy">
+                    </div>
                 </div>
             </a>
 
-            <a href="sightreading/" class="app-card anim">
-                <img src="sightreading/app-icon.png" alt="SightReading App Icon" class="app-icon">
-                <div class="app-name">SightReading</div>
-                <div class="app-tagline">Master sight-reading with interactive piano practice. Train your musical notation skills one note at a time.</div>
-                <div class="app-badges">
-                    <span class="app-badge badge-ios">iOS</span>
-                    <span class="app-badge badge-android">Android</span>
+            <!-- Plumble -->
+            <a href="plumble/" class="app-card anim">
+                <div class="app-info">
+                    <img src="plumble/images/app-icon.png" alt="Plumble" class="app-icon">
+                    <div class="app-name">Plumble</div>
+                    <div class="app-tagline">Drop cute characters, merge them to evolve! 5 themed worlds, combo chains, and shake to shuffle. Can you reach Lv.10?</div>
+                    <div class="app-badges">
+                        <span class="app-badge badge-coming">Coming Soon</span>
+                    </div>
+                </div>
+                <div class="app-preview">
+                    <div class="app-preview-bg" style="background-image:url(plumble/images/screenshot-gameplay1.jpg)"></div>
+                    <div class="preview-pair">
+                        <img src="plumble/images/screenshot-gameplay1.jpg" alt="Plumble gameplay" loading="lazy">
+                        <img src="plumble/images/screenshot-cat.jpg" alt="Plumble cat theme" loading="lazy">
+                    </div>
                 </div>
             </a>
         </div>
@@ -259,7 +370,7 @@
     </div>
 
     <script>
-        const observer = new IntersectionObserver(function(entries) {
+        var observer = new IntersectionObserver(function(entries) {
             entries.forEach(function(entry) {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
@@ -269,7 +380,7 @@
         }, { threshold: 0.1 });
 
         document.querySelectorAll('.anim').forEach(function(el, i) {
-            el.style.transitionDelay = (i * 0.12) + 's';
+            el.style.transitionDelay = (i * 0.1) + 's';
             observer.observe(el);
         });
     </script>
