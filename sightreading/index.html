@@ -57,7 +57,7 @@
         .nav-links a:hover { color: var(--text); }
 
         .lang-switcher {
-            display: flex; gap: 4px;
+            display: flex; gap: 3px; flex-wrap: wrap;
             background: rgba(255,255,255,0.06);
             border-radius: 8px; padding: 3px;
         }
@@ -65,6 +65,7 @@
             background: none; border: none; color: var(--text2);
             font-size: 0.8rem; padding: 4px 10px; border-radius: 6px;
             cursor: pointer; transition: all 0.2s; font-family: inherit;
+            white-space: nowrap;
         }
         .lang-btn:hover { color: var(--text); }
         .lang-btn.active { background: var(--accent); color: white; }
@@ -409,21 +410,47 @@
         .subtitle [data-i18n].active { display: inline; }
         div[data-i18n].active { display: block; }
 
-        /* Responsive */
+        /* Responsive — Tablet */
+        @media (max-width: 1024px) {
+            nav { padding: 12px 16px; }
+            .nav-links { gap: 16px; }
+            .nav-links a { font-size: 0.82rem; }
+            .lang-btn { font-size: 0.75rem; padding: 3px 7px; }
+            .hero-inner { gap: 40px; }
+            .hero-screenshots .phone-frame,
+            .hero-screenshots .phone-frame-android { width: 170px; }
+        }
+
+        /* Responsive — Small tablet / large phone */
         @media (max-width: 768px) {
-            .hero-inner { flex-direction: column; text-align: center; gap: 40px; }
+            nav { flex-wrap: wrap; gap: 8px; padding: 10px 16px; }
+            .nav-brand { font-size: 0.95rem; }
+            .nav-right { width: 100%; justify-content: center; gap: 0; }
+            .nav-links { display: none; }
+            .lang-switcher { justify-content: center; }
+            .lang-btn { font-size: 0.72rem; padding: 4px 8px; }
+            .hero { padding: 100px 20px 50px; }
+            .hero-inner { flex-direction: column; text-align: center; gap: 36px; }
+            .hero-text { min-width: 0; }
             .hero-text h1 { font-size: 2.2rem; }
+            .hero-text .subtitle { font-size: 1.05rem; }
+            .store-badges { justify-content: center; }
             .hero-screenshots .phone-frame { width: 150px; border-radius: 24px; padding: 5px; }
             .hero-screenshots .phone-frame::before { width: 44px; height: 14px; top: 5px; border-radius: 0 0 10px 10px; }
             .hero-screenshots .phone-frame img { border-radius: 19px; }
             .hero-screenshots .phone-frame-android { width: 150px; border-radius: 18px; padding: 5px; }
             .hero-screenshots .phone-frame-android img { border-radius: 14px; }
+            .features { padding: 60px 20px; }
+            .features h2 { font-size: 1.7rem; margin-bottom: 32px; }
+            .features-grid { grid-template-columns: 1fr; gap: 16px; }
+            .screenshots { padding: 60px 16px; }
+            .screenshots h2 { font-size: 1.7rem; }
+            .screenshots-scroll { gap: 16px; }
             .screenshots-scroll .phone-frame { width: 160px; border-radius: 24px; padding: 5px; }
             .screenshots-scroll .phone-frame::before { width: 44px; height: 14px; top: 5px; border-radius: 0 0 10px 10px; }
             .screenshots-scroll .phone-frame img { border-radius: 19px; }
             .screenshots-scroll .phone-frame-android { width: 160px; border-radius: 18px; padding: 5px; }
             .screenshots-scroll .phone-frame-android img { border-radius: 14px; }
-            .nav-links { display: none; }
             /* Flatten 3D on mobile */
             .screenshots-scroll .phone-frame,
             .screenshots-scroll .phone-frame.settled,
@@ -431,19 +458,62 @@
             .screenshots-scroll .phone-frame-android.settled {
                 transform: none !important;
             }
+            .reviews { padding: 60px 20px; }
+            .reviews h2 { font-size: 1.7rem; }
+            .reviews-grid { grid-template-columns: 1fr; }
+            .story { padding: 60px 20px; }
+            .story h2 { font-size: 1.7rem; }
+            .story p { font-size: 0.95rem; }
+            .support { padding: 60px 20px; }
+            .privacy { padding: 30px 20px 60px; }
+            .privacy-content { padding: 24px; }
         }
-        @media (max-width: 480px) {
-            .hero-screenshots .phone-frame { width: 120px; border-radius: 20px; padding: 4px; }
+
+        /* Responsive — Phone */
+        @media (max-width: 500px) {
+            nav { padding: 8px 12px; gap: 6px; }
+            .nav-brand { font-size: 0.9rem; gap: 8px; }
+            .nav-brand img { width: 28px; height: 28px; }
+            .lang-switcher { gap: 2px; padding: 2px; border-radius: 6px; }
+            .lang-btn { font-size: 0.68rem; padding: 3px 6px; border-radius: 5px; }
+            .hero { padding: 90px 16px 40px; min-height: auto; }
+            .hero-inner { gap: 28px; }
+            .hero-text h1 { font-size: 1.8rem; }
+            .hero-text .subtitle { font-size: 0.95rem; margin-bottom: 20px; }
+            .app-icon { width: 64px; height: 64px; border-radius: 14px; margin-bottom: 16px; }
+            .store-badges { flex-direction: column; align-items: center; gap: 10px; }
+            .app-store-badge img { height: 48px; }
+            .google-play-badge img { height: 48px !important; }
+            .hero-screenshots .phone-frame { width: 130px; border-radius: 20px; padding: 4px; }
             .hero-screenshots .phone-frame::before { width: 36px; height: 12px; top: 4px; border-radius: 0 0 8px 8px; }
             .hero-screenshots .phone-frame img { border-radius: 16px; }
-            .hero-screenshots .phone-frame-android { width: 120px; border-radius: 16px; padding: 4px; }
+            .hero-screenshots .phone-frame-android { width: 130px; border-radius: 16px; padding: 4px; }
             .hero-screenshots .phone-frame-android img { border-radius: 12px; }
+            .features { padding: 48px 16px; }
+            .features h2 { font-size: 1.5rem; margin-bottom: 24px; }
+            .feature-card { padding: 22px; }
+            .feature-card h3 { font-size: 1rem; }
+            .feature-card p { font-size: 0.88rem; }
             .screenshots-scroll .phone-frame { width: 140px; border-radius: 20px; padding: 4px; }
             .screenshots-scroll .phone-frame::before { width: 36px; height: 12px; top: 4px; border-radius: 0 0 8px 8px; }
             .screenshots-scroll .phone-frame img { border-radius: 16px; }
             .screenshots-scroll .phone-frame-android { width: 140px; border-radius: 16px; padding: 4px; }
             .screenshots-scroll .phone-frame-android img { border-radius: 12px; }
-            .hero-text h1 { font-size: 1.8rem; }
+            .reviews h2 { font-size: 1.5rem; }
+            .review-card { padding: 20px; }
+            .story h2, .support h2, .privacy h2 { font-size: 1.5rem; }
+            .support-content { padding: 24px; }
+            .privacy-content { padding: 20px; font-size: 0.88rem; }
+        }
+
+        /* Responsive — Small phone (iPhone SE, etc.) */
+        @media (max-width: 360px) {
+            .hero-text h1 { font-size: 1.5rem; }
+            .hero-screenshots .phone-frame,
+            .hero-screenshots .phone-frame-android { width: 110px; }
+            .screenshots-scroll .phone-frame,
+            .screenshots-scroll .phone-frame-android { width: 120px; }
+            .lang-btn { font-size: 0.62rem; padding: 3px 5px; }
         }
 
         html { scroll-behavior: smooth; }
@@ -512,7 +582,7 @@
             </div>
         </div>
         <div class="hero-screenshots" id="hero-phones">
-            <div class="phone-frame"><img src="screenshot-practice.png" alt="Practice Mode - iOS"></div>
+            <div class="phone-frame"><img src="screenshot-practice.png" alt="Practice Mode - iOS" data-screenshot="practice"></div>
             <div class="phone-frame-android"><img src="android-practice.png" alt="Practice Mode - Android"></div>
         </div>
     </div>
@@ -702,16 +772,16 @@
     <div class="screenshots-scroll" id="gallery" data-active-platform="ios">
         <!-- iOS screenshots -->
         <div class="phone-frame anim flip-in screenshot-ios" data-delay="0" style="--d:0ms">
-            <img src="screenshot-practice.png" alt="Practice - iOS" loading="lazy">
+            <img src="screenshot-practice.png" alt="Practice - iOS" loading="lazy" data-screenshot="practice">
         </div>
         <div class="phone-frame anim flip-in screenshot-ios" data-delay="150" style="--d:150ms">
-            <img src="screenshot-challenge.png" alt="Challenge - iOS" loading="lazy">
+            <img src="screenshot-challenge.png" alt="Challenge - iOS" loading="lazy" data-screenshot="challenge">
         </div>
         <div class="phone-frame anim flip-in screenshot-ios" data-delay="300" style="--d:300ms">
-            <img src="screenshot-statistics.png" alt="Statistics - iOS" loading="lazy">
+            <img src="screenshot-statistics.png" alt="Statistics - iOS" loading="lazy" data-screenshot="statistics">
         </div>
         <div class="phone-frame anim flip-in screenshot-ios" data-delay="450" style="--d:450ms">
-            <img src="screenshot-settings.png" alt="Settings - iOS" loading="lazy">
+            <img src="screenshot-settings.png" alt="Settings - iOS" loading="lazy" data-screenshot="settings">
         </div>
         <!-- Android screenshots -->
         <div class="phone-frame-android anim flip-in screenshot-android" data-delay="0" style="--d:0ms;display:none">
@@ -1083,6 +1153,13 @@
 // === i18n ===
 (function() {
     var KEY = 'sr-lang';
+    // Map language to screenshot folder (fallback to zh-Hant for zh-Hans)
+    var screenshotLangs = ['zh-Hant','en','ja','ko','es','fr','de','pt-BR'];
+    function screenshotFolder(lang) {
+        if (lang === 'zh-Hans') return 'zh-Hant';
+        if (screenshotLangs.indexOf(lang) !== -1) return lang;
+        return 'zh-Hant';
+    }
     function setLang(lang) {
         document.querySelectorAll('[data-i18n]').forEach(function(el) {
             var match = el.getAttribute('data-i18n') === lang;
@@ -1091,6 +1168,11 @@
         });
         document.querySelectorAll('.lang-btn').forEach(function(b) {
             b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+        });
+        // Swap iOS screenshots
+        var folder = screenshotFolder(lang);
+        document.querySelectorAll('img[data-screenshot]').forEach(function(img) {
+            img.src = 'screenshots/' + folder + '/' + img.getAttribute('data-screenshot') + '.png';
         });
         document.documentElement.lang = lang;
         try { localStorage.setItem(KEY, lang); } catch(e) {}
