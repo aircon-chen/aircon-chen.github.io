@@ -59,15 +59,15 @@
 
         /* ── 看板 ── */
         .scene{position:relative;z-index:2;height:300vh}
-        .scene-pin{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;pointer-events:none}
+        .scene-pin{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;pointer-events:none;overflow:hidden}
         .card{
-            text-align:center;max-width:460px;padding:0 24px;
+            text-align:center;max-width:460px;padding:0 20px;width:100%;box-sizing:border-box;
             transform-origin:50% 30%;
             will-change:transform,opacity;
         }
         .card .icon{font-size:56px;margin-bottom:14px}
-        .card h2{font-size:36px;font-weight:800;line-height:1.25;margin-bottom:12px}
-        .card p{font-size:17px;color:rgba(255,255,255,.55);line-height:1.9}
+        .card h2{font-size:clamp(24px, 6.5vw, 36px);font-weight:800;line-height:1.25;margin-bottom:12px}
+        .card p{font-size:clamp(13px, 3.5vw, 17px);color:rgba(255,255,255,.55);line-height:1.9;word-break:keep-all}
         .card .g{color:var(--green);font-weight:700}
         .card .a{color:var(--accent);font-weight:700}
         .card .r{color:#FF4545;font-weight:700}
@@ -164,8 +164,13 @@
         .algo-desc{font-size:12px;color:rgba(255,255,255,.45);line-height:1.6}
 
         @media(max-width:420px){
-            .phone-mock{width:120px}
-            .dual-phones{gap:12px}
+            .phone-mock{width:110px}
+            .dual-phones{gap:10px}
+            .algo-features{max-width:100%}
+            .cta-gauge-svg{width:220px!important;height:220px!important}
+            .cta-logo{width:100px!important;height:100px!important}
+            .final-cta-text{font-size:18px!important}
+            .final-cta-brand{font-size:32px!important}
         }
 
         /* CTA Hero */
@@ -177,8 +182,8 @@
         .cta-sub{font-size:13px;color:rgba(255,255,255,.3);margin:20px 0 24px;line-height:1.8}
         .coming-soon{display:inline-block;padding:12px 28px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.45);font-size:14px;font-weight:500;letter-spacing:1px}
         .final-cta{position:relative;z-index:3;text-align:center;padding:80px 28px 60px;background:var(--bg)}
-        .final-cta-text{font-size:clamp(20px, 5vw, 32px);font-weight:600;color:rgba(255,255,255,.5)}
-        .final-cta-brand{font-size:clamp(36px, 10vw, 56px);font-weight:800;letter-spacing:4px;background:linear-gradient(135deg,#fff,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:0 8px;vertical-align:baseline}
+        .final-cta-text{font-size:clamp(16px, 4.5vw, 28px);font-weight:600;color:rgba(255,255,255,.5)}
+        .final-cta-brand{font-size:clamp(28px, 9vw, 52px);font-weight:800;letter-spacing:clamp(2px,1vw,4px);background:linear-gradient(135deg,#fff,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:0 4px;vertical-align:baseline}
 
         /* Footer */
         footer{position:relative;z-index:2;text-align:center;padding:40px 24px;border-top:1px solid rgba(255,255,255,.06);background:rgba(10,10,15,.95)}
@@ -420,12 +425,12 @@
 <div class="scene"><div class="scene-pin"><div class="card" data-board>
     <h2>99 級駕駛等級</h2>
     <p>每趟行程獲得 XP · 分享你的駕駛認證</p>
-    <canvas id="radarChart" width="780" height="780" style="width:260px;height:260px;margin:24px auto 0;display:block"></canvas>
-    <canvas id="badgeStrip" width="2400" height="300" style="width:100%;max-width:460px;margin:20px auto 0;display:block"></canvas>
-    <p style="margin-top:16px">從 <span class="g">菜鳥上路</span> 到 <span class="a">照不到之巔</span></p>
+    <canvas id="radarChart" width="780" height="780" style="width:min(260px,70vw);height:min(260px,70vw);margin:24px auto 0;display:block"></canvas>
+    <canvas id="badgeStrip" width="2400" height="300" style="width:100%;max-width:min(460px,calc(100vw - 40px));margin:20px auto 0;display:block"></canvas>
+    <p style="margin-top:16px;font-size:clamp(14px,3.5vw,17px)">從 <span class="g">菜鳥上路</span> 到 <span class="a">照不到之巔</span></p>
 </div></div></div>
 
-<div class="scene"><div class="scene-pin" style="pointer-events:auto"><div class="card" data-board style="max-width:520px">
+<div class="scene"><div class="scene-pin" style="pointer-events:auto"><div class="card" data-board>
     <svg class="cta-gauge-svg" viewBox="0 0 480 480" style="margin-bottom:8px">
         <path class="gauge-arc-bg" d="M 45 400 A 215 215 0 1 1 435 400"/>
         <path class="gauge-arc-fill" d="M 45 400 A 215 215 0 1 1 435 400" stroke-dasharray="1050" stroke-dashoffset="200" style="stroke:var(--green);filter:drop-shadow(0 0 10px rgba(52,199,89,.4))"/>
