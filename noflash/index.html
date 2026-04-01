@@ -527,7 +527,7 @@
             } else {
                 const t = (progress - 0.55) / 0.45;
                 scale = 1 + 1.2 * t;
-                opacity = 1;
+                opacity = 1 - t * t;
                 ty = 10 * t;
             }
 
