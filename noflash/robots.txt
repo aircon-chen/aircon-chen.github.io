@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://aircon-chen.github.io/noflash/sitemap.xml

@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>照不到 — 測速照相即時警示</title>
+    <meta name="description" content="專為台灣駕駛設計的測速照相警示 App，方向判斷、漸進式警示、智慧靜音，每次提醒都有原因。">
+    <link rel="canonical" href="https://aircon-chen.github.io/noflash/">
+    <meta property="og:title" content="照不到 — 測速照相即時警示">
+    <meta property="og:description" content="專為台灣駕駛設計的測速照相警示 App，方向判斷、漸進式警示、智慧靜音，每次提醒都有原因。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aircon-chen.github.io/noflash/">
+    <meta property="og:image" content="https://aircon-chen.github.io/noflash/app-icon.png">
+    <meta property="og:locale" content="zh_TW">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="照不到 — 測速照相即時警示">
+    <meta name="twitter:description" content="專為台灣駕駛設計的測速照相警示 App，方向判斷、漸進式警示、智慧靜音。">
+    <meta name="twitter:image" content="https://aircon-chen.github.io/noflash/app-icon.png">
+    <link rel="icon" type="image/png" href="app-icon.png">
+    <link rel="apple-touch-icon" href="app-icon.png">
+    <meta name="theme-color" content="#0A0A0F">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "照不到",
+      "alternateName": "NoFlash",
+      "description": "專為台灣駕駛設計的測速照相警示 App",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "iOS 17+",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TWD" },
+      "author": { "@type": "Person", "name": "Aircon" },
+      "url": "https://aircon-chen.github.io/noflash/",
+      "image": "https://aircon-chen.github.io/noflash/app-icon.png"
+    }
+    </script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#0A0A0F;--green:#34C759;--accent:#FF6B4A;--amber:#FFB428}
+        body{background:var(--bg);color:#F5F5F7;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;overflow-x:hidden}
+
+        /* 道路 fixed */
+        #roadCanvas{position:fixed;bottom:0;left:0;width:100%;height:65%;z-index:0}
+        .road-fade{position:fixed;top:0;left:0;width:100%;height:50%;background:linear-gradient(var(--bg) 35%,transparent);z-index:1;pointer-events:none}
+
+        /* Hero */
+        .hero{position:relative;z-index:2;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+        .gauge-svg{width:min(95vw, 700px);height:min(95vw, 700px);filter:drop-shadow(0 0 80px rgba(52,199,89,.12))}
+        .gauge-arc-bg{fill:none;stroke:rgba(255,255,255,.06);stroke-width:4;stroke-linecap:round}
+        .gauge-arc-fill{fill:none;stroke:var(--green);stroke-width:4;stroke-linecap:round;filter:drop-shadow(0 0 10px rgba(52,199,89,.4));transition:stroke-dashoffset 1.5s ease}
+        .gauge-logo{width:min(44vw, 288px);height:min(44vw, 288px);border-radius:min(10vw, 64px);box-shadow:0 30px 80px rgba(200,75,49,.2)}
+        .hero h1{font-size:clamp(48px, 12vw, 80px);font-weight:800;letter-spacing:4px;margin-top:16px}
+        .hero .sub{font-size:clamp(12px, 2.5vw, 16px);color:rgba(255,255,255,.3);letter-spacing:clamp(6px, 2vw, 12px);margin-bottom:6px}
+        .hero .tagline{font-size:clamp(18px, 4vw, 24px);font-weight:600;background:linear-gradient(135deg,#fff,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:28px}
+        .badge{display:inline-block;height:50px;transition:transform .2s}
+        .badge:hover{transform:scale(1.05)}
+        .scroll-hint{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);animation:bob 2s ease infinite;color:rgba(255,255,255,.3);font-size:24px}
+        @keyframes bob{0%,100%{transform:translateX(-50%)}50%{transform:translateX(-50%) translateY(8px)}}
+
+        /* ── 看板 ── */
+        .scene{position:relative;z-index:2;height:300vh}
+        .scene-pin{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;pointer-events:none}
+        .card{
+            text-align:center;max-width:460px;padding:0 24px;
+            transform-origin:50% 30%;
+            will-change:transform,opacity;
+        }
+        .card .icon{font-size:56px;margin-bottom:14px}
+        .card h2{font-size:36px;font-weight:800;line-height:1.25;margin-bottom:12px}
+        .card p{font-size:17px;color:rgba(255,255,255,.55);line-height:1.9}
+        .card .g{color:var(--green);font-weight:700}
+        .card .a{color:var(--accent);font-weight:700}
+        .card .r{color:#FF4545;font-weight:700}
+        .card::before{content:'';display:block;width:28px;height:2px;background:linear-gradient(90deg,var(--accent),transparent);margin:0 auto 24px}
+        .mini{width:160px;border-radius:20px;margin-top:20px;box-shadow:0 0 0 2px rgba(255,255,255,.06),0 20px 40px rgba(0,0,0,.4);opacity:.85}
+
+        /* ── 警示模擬器 ── */
+        .alert-sim{max-width:260px;margin:0 auto}
+        .sim-screen{
+            aspect-ratio:9/16;max-height:380px;
+            border-radius:28px;overflow:hidden;position:relative;
+            background:#0A0A0F;margin:0 auto;
+            box-shadow:0 0 0 3px rgba(255,255,255,.08),0 30px 60px rgba(0,0,0,.5);
+        }
+        .sim-frame{
+            position:absolute;inset:0;
+            display:flex;flex-direction:column;align-items:center;justify-content:center;
+            transition:opacity .6s ease;
+        }
+        .sim-status{font-size:16px;font-weight:600;margin-top:8px;letter-spacing:4px}
+        .sim-limit-badge{position:relative;width:72px;height:72px;margin-bottom:6px}
+        .limit-ring{position:absolute;inset:0;border-radius:50%;background:#D22630}
+        .limit-inner{
+            position:absolute;inset:11%;border-radius:50%;background:#fff;
+            display:flex;align-items:center;justify-content:center;
+            font-size:24px;font-weight:900;color:#000;
+        }
+        .sim-divider{width:36px;height:2px;margin:6px 0;border-radius:1px}
+        .sim-speed{font-size:52px;font-weight:200;font-family:-apple-system,sans-serif;line-height:1}
+        .sim-unit{font-size:10px;font-weight:500;color:rgba(255,255,255,.4);letter-spacing:3px;margin-top:2px}
+        .sim-dist{font-size:22px;font-weight:700;margin-top:12px;font-variant-numeric:tabular-nums}
+        .sim-label{font-size:10px;letter-spacing:3px;color:rgba(255,255,255,.35);margin-top:4px}
+        .sim-progress{position:absolute;bottom:0;left:0;right:0;height:4px;background:rgba(255,255,255,.1)}
+        .sim-bar{height:100%;width:0%;border-radius:0 2px 2px 0;transition:width .3s linear}
+
+        /* ── 雙手機模擬 ── */
+        .dual-phones{display:flex;gap:16px;justify-content:center;align-items:flex-start}
+        .phone-col{display:flex;flex-direction:column;align-items:center}
+        .phone-mock{
+            width:140px;aspect-ratio:9/19.5;border-radius:20px;overflow:hidden;position:relative;
+            background:#0A0A0F;
+            box-shadow:0 0 0 2px rgba(255,255,255,.08),0 20px 40px rgba(0,0,0,.5);
+            transition:box-shadow .6s ease;
+        }
+        .phone-label{font-size:11px;color:rgba(255,255,255,.35);margin-top:8px;letter-spacing:2px;font-weight:500}
+
+        /* 儀表板模式 */
+        .dash-frame{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:8px 6px 0;transition:background .6s ease}
+        .dash-status{font-size:6px;letter-spacing:1px;display:flex;align-items:center;gap:3px;color:rgba(255,255,255,.4);margin-bottom:2px}
+        .dash-gps{font-size:4px;color:#34C759}
+        .dash-status-text{transition:color .4s}
+        .dash-alert-card{
+            padding:3px 8px;border-radius:6px;
+            background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);
+            display:flex;gap:6px;align-items:center;transition:opacity .4s;margin-bottom:2px;
+        }
+        .dash-card-type{font-size:7px;font-weight:600;color:rgba(255,255,255,.6)}
+        .dash-card-dist{font-size:9px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--amber)}
+        .dash-gauge-wrap{position:relative;width:108px;height:108px;flex-shrink:0}
+        .dash-gauge{width:100%;height:100%}
+        .dash-arc-fill{transition:stroke .5s ease,stroke-dashoffset .8s ease}
+        .dash-center{position:absolute;top:18%;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+        .dash-cruise{display:flex;flex-direction:column;align-items:center;transition:opacity .4s}
+        .dash-limit-badge{position:relative;width:30px;height:30px}
+        .dash-limit-ring{position:absolute;inset:0;border-radius:50%;background:#D22630}
+        .dash-limit-num{position:absolute;inset:16%;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#000}
+        .dash-speed-gap{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);text-align:center}
+        .dash-speed{font-size:26px;font-weight:500;font-variant-numeric:tabular-nums;transition:color .5s;line-height:1;font-family:-apple-system,sans-serif}
+        .dash-kmh{font-size:6px;letter-spacing:1.5px;color:rgba(255,255,255,.3);margin-top:0}
+        .dash-road-perspective{position:absolute;bottom:0;left:0;right:0;height:42%;overflow:hidden;pointer-events:none}
+        .dash-road-cv{width:100%;height:100%;display:block}
+        .dash-passed{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity .5s;background:rgba(10,10,15,.8);z-index:2}
+
+        /* 精簡模式 */
+        .min-frame{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:background .6s ease,box-shadow .6s ease}
+        .min-guardian{display:flex;flex-direction:column;align-items:center;transition:opacity .4s}
+        .min-alert{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s}
+        .min-limit-badge{position:relative;width:52px;height:52px;margin-bottom:4px}
+        .min-limit-ring{position:absolute;inset:0;border-radius:50%;background:#D22630}
+        .min-limit-inner{position:absolute;inset:15%;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#000}
+        .min-divider{width:28px;height:2px;border-radius:1px;margin:4px 0;transition:background .4s}
+        .min-speed{font-size:40px;font-weight:200;font-variant-numeric:tabular-nums;line-height:1;font-family:-apple-system,sans-serif}
+        .min-kmh{font-size:7px;letter-spacing:2px;color:rgba(255,255,255,.4);margin-top:1px}
+        .min-dist{font-size:16px;font-weight:700;margin-top:8px;font-variant-numeric:tabular-nums}
+        .min-progress{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.08)}
+        .min-bar{height:100%;width:0%;border-radius:0 2px 2px 0;transition:width .3s linear}
+        .min-passed{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s;background:rgba(10,10,15,.9)}
+
+        /* ── 演算法特點 ── */
+        .algo-features{text-align:left;max-width:300px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+        .algo-row{display:flex;gap:12px;align-items:flex-start}
+        .algo-icon-wrap{width:36px;height:36px;flex-shrink:0;border-radius:10px;background:rgba(52,199,89,.08);display:flex;align-items:center;justify-content:center}
+        .algo-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:2px}
+        .algo-desc{font-size:12px;color:rgba(255,255,255,.45);line-height:1.6}
+
+        @media(max-width:420px){
+            .phone-mock{width:120px}
+            .dual-phones{gap:12px}
+        }
+
+        /* CTA Hero */
+        .cta-hero{position:relative;z-index:3;text-align:center;padding:120px 28px 60px;max-width:520px;margin:0 auto}
+        .cta-gauge-svg{width:min(70vw, 420px);height:min(70vw, 420px);filter:drop-shadow(0 0 50px rgba(52,199,89,.1))}
+        .cta-logo{width:min(32vw, 180px);height:min(32vw, 180px);border-radius:min(7vw, 40px);box-shadow:0 20px 60px rgba(200,75,49,.18)}
+        .cta-lead{font-size:clamp(16px, 3.5vw, 20px);font-weight:600;color:rgba(255,255,255,.45);line-height:1.4;margin:0}
+        .cta-brand{font-size:clamp(48px, 12vw, 72px);font-weight:800;letter-spacing:6px;background:linear-gradient(135deg,#fff,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:4px 0 8px;line-height:1.1}
+        .cta-sub{font-size:13px;color:rgba(255,255,255,.3);margin:20px 0 24px;line-height:1.8}
+        .final-cta{position:relative;z-index:3;text-align:center;padding:80px 28px 60px;background:var(--bg)}
+        .final-cta-text{font-size:clamp(20px, 5vw, 32px);font-weight:600;color:rgba(255,255,255,.5)}
+        .final-cta-brand{font-size:clamp(36px, 10vw, 56px);font-weight:800;letter-spacing:4px;background:linear-gradient(135deg,#fff,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:0 8px;vertical-align:baseline}
+
+        /* Footer */
+        footer{position:relative;z-index:2;text-align:center;padding:40px 24px;border-top:1px solid rgba(255,255,255,.06);background:rgba(10,10,15,.95)}
+        footer a{color:rgba(255,255,255,.55);text-decoration:none;font-size:13px;margin:0 12px}
+        footer a:hover{color:#fff}
+        footer .c{font-size:12px;color:rgba(255,255,255,.3);margin-top:16px}
+
+        @media(max-width:420px){
+            .card h2{font-size:28px}
+        }
+    </style>
+</head>
+<body>
+
+<div class="road-fade"></div>
+<canvas id="roadCanvas"></canvas>
+
+<div class="hero">
+    <svg class="gauge-svg" viewBox="0 0 480 480">
+        <path class="gauge-arc-bg" d="M 45 400 A 215 215 0 1 1 435 400"/>
+        <path class="gauge-arc-fill" d="M 45 400 A 215 215 0 1 1 435 400" stroke-dasharray="1050" stroke-dashoffset="400" id="arcFill"/>
+        <foreignObject x="20" y="20" width="440" height="440">
+            <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;align-items:flex-end;justify-content:center;height:100%;padding-bottom:8%">
+                <img src="app-icon.png" class="gauge-logo" alt="照不到">
+            </div>
+        </foreignObject>
+    </svg>
+    <h1>照不到</h1>
+    <p class="sub">NOFLASH</p>
+    <p class="tagline">守護每一趟旅程的安全</p>
+    <a href="https://apps.apple.com/tw/app/noflash/id0000000000"><img src="appstore-badge.svg" alt="App Store" class="badge"></a>
+    <div class="scroll-hint">&#x2304;</div>
+</div>
+
+<div class="scene"><div class="scene-pin"><div class="card" data-board>
+    <h2>不是看到才煞車<br>是提早收油</h2>
+    <p style="margin-bottom:24px">前方測速點，照不到一路提早提醒<br>距離越近，警示越明確</p>
+    <!-- App 警示模擬器 -->
+    <div id="alertSim" class="alert-sim">
+        <div class="sim-screen" id="simScreen">
+            <!-- 守護中 -->
+            <div class="sim-frame" id="simGuardian">
+                <svg width="60" height="60" viewBox="0 0 60 60">
+                    <path d="M30 5 L55 20 L55 42 Q55 55 30 58 Q5 55 5 42 L5 20 Z" fill="none" stroke="#34C759" stroke-width="2.5"/>
+                    <path d="M20 30 L27 37 L40 22" fill="none" stroke="#34C759" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="sim-status" style="color:#34C759">守護中</div>
+            </div>
+            <!-- 接近中 -->
+            <div class="sim-frame" id="simApproach" style="opacity:0">
+                <div class="sim-limit-badge">
+                    <div class="limit-ring"></div>
+                    <div class="limit-inner">50</div>
+                </div>
+                <div class="sim-divider"></div>
+                <div class="sim-speed" id="simSpeed">92</div>
+                <div class="sim-unit">KM/H</div>
+                <div class="sim-dist" id="simDist">800m</div>
+                <div class="sim-label">前方測速照相</div>
+                <div class="sim-progress"><div class="sim-bar" id="simBar"></div></div>
+            </div>
+            <!-- 安全通過 -->
+            <div class="sim-frame" id="simPassed" style="opacity:0">
+                <svg width="60" height="60" viewBox="0 0 60 60">
+                    <circle cx="30" cy="30" r="26" fill="none" stroke="#34C759" stroke-width="2.5"/>
+                    <path d="M18 30 L26 38 L42 20" fill="none" stroke="#34C759" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="sim-status" style="color:#34C759;font-size:20px;font-weight:700">安全通過</div>
+            </div>
+        </div>
+    </div>
+    <p style="margin-top:20px;font-size:14px;color:rgba(255,255,255,.35)">少急煞 · 少誤判 · 少紅單</p>
+</div></div></div>
+
+<div class="scene"><div class="scene-pin"><div class="card" data-board>
+    <h2>兩種視角<br>同一份安心</h2>
+    <p style="margin-bottom:20px">資訊派 · 沉浸派 · <span class="g">隨你切換</span></p>
+    <div class="dual-phones" id="dualPhones">
+        <div class="phone-col">
+            <div class="phone-mock" id="phoneDash">
+                <!-- 儀表板模式 -->
+                <div class="dash-frame" id="dashFrame">
+                    <!-- 狀態列 -->
+                    <div class="dash-status" id="dashStatus">
+                        <span class="dash-gps">●</span>
+                        <span class="dash-status-text" id="dashStatusText">巡航中</span>
+                    </div>
+                    <!-- AlertCard（警示時出現在儀表上方）-->
+                    <div class="dash-alert-card" id="dashCard" style="opacity:0">
+                        <div class="dash-card-type" id="dashCardType">固定式</div>
+                        <div class="dash-card-dist" id="dashCardDist">800m</div>
+                    </div>
+                    <!-- 弧形儀表（開口朝下 C 型）-->
+                    <div class="dash-gauge-wrap">
+                        <svg class="dash-gauge" viewBox="0 0 200 200">
+                            <!-- 270° arc: from 135° (bottom-left) to 405°/45° (bottom-right), opening downward -->
+                            <path d="M 36.4 163.6 A 90 90 0 1 1 163.6 163.6" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="5" stroke-linecap="round"/>
+                            <path class="dash-arc-fill" id="dashArc" d="M 36.4 163.6 A 90 90 0 1 1 163.6 163.6" fill="none" stroke="#34C759" stroke-width="5" stroke-linecap="round" stroke-dasharray="424" stroke-dashoffset="212"/>
+                            <!-- 刻度線 (simplified: 0,40,80,120,160) -->
+                            <g stroke="rgba(255,255,255,.15)" stroke-width="1">
+                                <line x1="36" y1="164" x2="44" y2="157"/>
+                                <line x1="18" y1="108" x2="27" y2="110"/>
+                                <line x1="46" y1="27" x2="52" y2="35"/>
+                                <line x1="100" y1="10" x2="100" y2="19"/>
+                                <line x1="154" y1="27" x2="148" y2="35"/>
+                                <line x1="182" y1="108" x2="173" y2="110"/>
+                                <line x1="164" y1="164" x2="156" y2="157"/>
+                            </g>
+                            <!-- 速限紅標線（警示時顯示）-->
+                            <line class="dash-limit-tick" id="dashLimitTick" x1="100" y1="10" x2="100" y2="24" stroke="#D22630" stroke-width="2" stroke-linecap="round" opacity="0"/>
+                        </svg>
+                        <!-- 儀表正中央：巡航徽章 或 速限徽章 -->
+                        <div class="dash-center">
+                            <div class="dash-cruise" id="dashCruise">
+                                <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 2L22 8V16Q22 22 12 24Q2 22 2 16V8Z" fill="none" stroke="#34C759" stroke-width="1.5"/><path d="M7 12L10.5 15.5L17 8.5" fill="none" stroke="#34C759" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <div style="font-size:6px;color:#34C759;margin-top:1px;letter-spacing:1px">巡航中</div>
+                            </div>
+                            <div class="dash-limit-badge" id="dashLimitBadge" style="display:none">
+                                <div class="dash-limit-ring"></div>
+                                <div class="dash-limit-num" id="dashLimitNum">50</div>
+                            </div>
+                        </div>
+                        <!-- 速度數字在弧缺口（底部）-->
+                        <div class="dash-speed-gap">
+                            <div class="dash-speed" id="dashSpeed">0</div>
+                            <div class="dash-kmh">km/h</div>
+                        </div>
+                    </div>
+                    <!-- 透視道路動畫 -->
+                    <div class="dash-road-perspective">
+                        <canvas class="dash-road-cv" id="dashRoadCv" width="280" height="240"></canvas>
+                    </div>
+                    <!-- 安全通過 overlay -->
+                    <div class="dash-passed" id="dashPassed" style="opacity:0">
+                        <svg width="36" height="36" viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="#34C759" stroke-width="2.5"/><path d="M18 30 L26 38 L42 20" fill="none" stroke="#34C759" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                </div>
+            </div>
+            <div class="phone-label">儀表板模式</div>
+        </div>
+        <div class="phone-col">
+            <div class="phone-mock" id="phoneMin">
+                <!-- 精簡模式 -->
+                <div class="min-frame" id="minFrame">
+                    <!-- 守護中 -->
+                    <div class="min-guardian" id="minGuardian">
+                        <svg width="40" height="40" viewBox="0 0 60 60"><path d="M30 5 L55 20 L55 42 Q55 55 30 58 Q5 55 5 42 L5 20 Z" fill="none" stroke="#34C759" stroke-width="2.5"/><path d="M20 30 L27 37 L40 22" fill="none" stroke="#34C759" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <div style="font-size:12px;color:#34C759;margin-top:6px;letter-spacing:3px;font-weight:600">守護中</div>
+                    </div>
+                    <!-- 警示畫面 -->
+                    <div class="min-alert" id="minAlert" style="opacity:0">
+                        <div class="min-limit-badge" id="minLimitBadge">
+                            <div class="min-limit-ring"></div>
+                            <div class="min-limit-inner" id="minLimitNum">50</div>
+                        </div>
+                        <div class="min-divider" id="minDivider"></div>
+                        <div class="min-speed" id="minSpeed">92</div>
+                        <div class="min-kmh">KM/H</div>
+                        <div class="min-dist" id="minDist">800m</div>
+                        <div class="min-progress"><div class="min-bar" id="minBar"></div></div>
+                    </div>
+                    <!-- 安全通過 -->
+                    <div class="min-passed" id="minPassed" style="opacity:0">
+                        <svg width="40" height="40" viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="#34C759" stroke-width="2.5"/><path d="M18 30 L26 38 L42 20" fill="none" stroke="#34C759" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <div style="font-size:14px;color:#34C759;margin-top:6px;font-weight:700">安全通過</div>
+                    </div>
+                </div>
+            </div>
+            <div class="phone-label">精簡模式</div>
+        </div>
+    </div>
+    <p style="margin-top:16px;font-size:13px;color:rgba(255,255,255,.3)">完整儀表 或 極致專注 · 一鍵切換</p>
+</div></div></div>
+
+<div class="scene"><div class="scene-pin"><div class="card" data-board>
+    <h2>每一次提醒<br>都有原因</h2>
+    <p style="margin-bottom:20px;color:rgba(255,255,255,.45)">照不到用演算法判斷<br>讓每次警示都是有意義的提醒</p>
+    <div class="algo-features">
+        <div class="algo-row">
+            <div class="algo-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L20 7V17L12 22L4 17V7Z" stroke="#34C759" stroke-width="1.5"/><path d="M12 8V12M12 16H12.01" stroke="#34C759" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div class="algo-text">
+                <div class="algo-title">方向判斷</div>
+                <div class="algo-desc">只提醒你行駛方向的測速照相</div>
+            </div>
+        </div>
+        <div class="algo-row">
+            <div class="algo-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 12H7L10 20L14 4L17 12H21" stroke="#34C759" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="algo-text">
+                <div class="algo-title">漸進式警示</div>
+                <div class="algo-desc">距離＋速度綜合判斷，越接近提醒越明確</div>
+            </div>
+        </div>
+        <div class="algo-row">
+            <div class="algo-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#34C759" stroke-width="1.5"/><path d="M12 7V12L15 15" stroke="#34C759" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="algo-text">
+                <div class="algo-title">低速自動降低音量</div>
+                <div class="algo-desc">塞車慢速時降低提示強度，不干擾你的音樂</div>
+            </div>
+        </div>
+    </div>
+    <p style="margin-top:20px;font-size:13px;color:rgba(255,255,255,.25)">不漏提醒 也不亂叫</p>
+</div></div></div>
+
+<div class="scene"><div class="scene-pin"><div class="card" data-board>
+    <h2>用聽的<br>也夠安全</h2>
+    <p style="margin-bottom:20px;color:rgba(255,255,255,.45)">眼睛看路，耳朵交給照不到</p>
+    <div class="algo-features">
+        <div class="algo-row">
+            <div class="algo-icon-wrap" style="background:rgba(255,107,74,.08)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C13.1 2 14 2.9 14 4V12C14 13.1 13.1 14 12 14C10.9 14 10 13.1 10 12V4C10 2.9 10.9 2 12 2Z" stroke="#FF6B4A" stroke-width="1.5"/><path d="M17 12C17 14.76 14.76 17 12 17C9.24 17 7 14.76 7 12" stroke="#FF6B4A" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="17" x2="12" y2="21" stroke="#FF6B4A" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+            <div class="algo-text">
+                <div class="algo-title">自訂你的提醒聲音 <span style="font-size:9px;color:rgba(255,107,74,.6);font-weight:500">PRO</span></div>
+                <div class="algo-desc">錄家人的聲音，提醒更有溫度</div>
+            </div>
+        </div>
+        <div class="algo-row">
+            <div class="algo-icon-wrap" style="background:rgba(255,107,74,.08)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 18V6L21 12L9 18Z" stroke="#FF6B4A" stroke-width="1.5" stroke-linejoin="round"/><path d="M3 6V18" stroke="#FF6B4A" stroke-width="1.5" stroke-linecap="round" opacity=".5"/></svg></div>
+            <div class="algo-text">
+                <div class="algo-title">音樂不會被切掉</div>
+                <div class="algo-desc">播報時自動降低音量，講完恢復</div>
+            </div>
+        </div>
+        <div class="algo-row">
+            <div class="algo-icon-wrap" style="background:rgba(255,107,74,.08)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="6" y="3" rx="2" width="12" height="18" stroke="#FF6B4A" stroke-width="1.5"/><circle cx="12" cy="17" r="1" fill="#FF6B4A"/><path d="M9 9L11 11L15 7" stroke="#FF6B4A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/></svg></div>
+            <div class="algo-text">
+                <div class="algo-title">手感振動回饋</div>
+                <div class="algo-desc">振動提醒，騎車戴耳機也感受得到</div>
+            </div>
+        </div>
+        <div class="algo-row">
+            <div class="algo-icon-wrap" style="background:rgba(255,107,74,.08)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="#FF6B4A" stroke-width="1.5" stroke-linejoin="round"/><path d="M15.5 8.5C16.5 9.5 17 10.7 17 12C17 13.3 16.5 14.5 15.5 15.5" stroke="#FF6B4A" stroke-width="1.5" stroke-linecap="round"/><path d="M18.5 5.5C20.3 7.3 21 9.6 21 12C21 14.4 20.3 16.7 18.5 18.5" stroke="#FF6B4A" stroke-width="1.5" stroke-linecap="round" opacity=".5"/></svg></div>
+            <div class="algo-text">
+                <div class="algo-title">六種語音模式</div>
+                <div class="algo-desc">完整播報到完全靜音，自己選</div>
+            </div>
+        </div>
+    </div>
+</div></div></div>
+
+<div class="scene"><div class="scene-pin"><div class="card" data-board>
+    <h2>99 級駕駛等級</h2>
+    <p>每趟行程獲得 XP · 分享你的駕駛認證</p>
+    <canvas id="radarChart" width="780" height="780" style="width:260px;height:260px;margin:24px auto 0;display:block"></canvas>
+    <canvas id="badgeStrip" width="2400" height="300" style="width:100%;max-width:460px;margin:20px auto 0;display:block"></canvas>
+    <p style="margin-top:16px">從 <span class="g">菜鳥上路</span> 到 <span class="a">照不到之巔</span></p>
+</div></div></div>
+
+<div class="scene"><div class="scene-pin" style="pointer-events:auto"><div class="card" data-board style="max-width:520px">
+    <svg class="cta-gauge-svg" viewBox="0 0 480 480" style="margin-bottom:8px">
+        <path class="gauge-arc-bg" d="M 45 400 A 215 215 0 1 1 435 400"/>
+        <path class="gauge-arc-fill" d="M 45 400 A 215 215 0 1 1 435 400" stroke-dasharray="1050" stroke-dashoffset="200" style="stroke:var(--green);filter:drop-shadow(0 0 10px rgba(52,199,89,.4))"/>
+        <foreignObject x="60" y="60" width="360" height="360">
+            <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;align-items:flex-end;justify-content:center;height:100%;padding-bottom:10%">
+                <img src="app-icon.png" class="cta-logo" alt="照不到">
+            </div>
+        </foreignObject>
+    </svg>
+    <p class="final-cta-text" style="margin-top:0">零紅單從<span class="final-cta-brand">照不到</span>使用開始</p>
+    <p class="cta-sub">資料來源：data.gov.tw + 照不到自有加工<br>定期自動更新 · 涵蓋全台測速點位</p>
+    <a href="https://apps.apple.com/tw/app/noflash/id0000000000" style="pointer-events:auto"><img src="appstore-badge.svg" alt="App Store" class="badge"></a>
+</div></div></div>
+
+<div class="final-cta">
+    <p class="final-cta-text">零紅單從<span class="final-cta-brand">照不到</span>使用開始</p>
+    <a href="https://apps.apple.com/tw/app/noflash/id0000000000"><img src="appstore-badge.svg" alt="App Store" class="badge" style="margin-top:24px"></a>
+</div>
+
+<footer>
+    <nav><a href="privacy.html">隱私權政策</a><a href="terms.html">使用條款</a><a href="support.html">支援</a></nav>
+    <p class="c">&copy; 2026 照不到 by @Aircon</p>
+</footer>
+
+<script>
+(function(){
+    // ── 頁面可見性控制（避免背景 CPU 浪費）──
+    let pageVisible = true;
+    document.addEventListener('visibilitychange', () => { pageVisible = !document.hidden; });
+
+    // ── 道路 ──
+    const cv=document.getElementById('roadCanvas'),cx=cv.getContext('2d');
+    let W,H;
+    function rsz(){cv.width=innerWidth*2;cv.height=innerHeight*.65*2;W=innerWidth;H=innerHeight*.65;cx.setTransform(2,0,0,2,0,0)}
+    function road(t){
+        cx.clearRect(0,0,W,H);
+        const vx=W/2,tw=6,bw=W;
+        cx.beginPath();cx.moveTo(vx-tw/2,0);cx.lineTo(vx+tw/2,0);
+        cx.lineTo(vx+bw/2,H);cx.lineTo(vx-bw/2,H);cx.closePath();
+        cx.fillStyle='#1A1C1E';cx.fill();
+        const p=(t%2000)/2000;
+        [-0.167,0.167].forEach(o=>{
+            for(let i=-1;i<12;i++){
+                const s=Math.max(0,(i+p)/12),e=Math.min(1,s+.5/12);
+                if(e<=0||s>=1)continue;
+                const ps=s**2.2,pe=e**2.2;
+                const x1=vx+(bw*o-tw*o)*ps+tw*o,x2=vx+(bw*o-tw*o)*pe+tw*o;
+                const l1=4*ps,l2=4*pe;
+                cx.beginPath();cx.moveTo(x1-l1/2,H*ps);cx.lineTo(x1+l1/2,H*ps);
+                cx.lineTo(x2+l2/2,H*pe);cx.lineTo(x2-l2/2,H*pe);cx.closePath();
+                cx.fillStyle=`rgba(255,255,255,${pe*pe*.35})`;cx.fill();
+            }
+        });
+        const g=cx.createLinearGradient(0,0,0,H*.3);
+        g.addColorStop(0,'#0A0A0F');g.addColorStop(1,'rgba(10,10,15,0)');
+        cx.fillStyle=g;cx.fillRect(0,0,W,H*.3);
+        if(pageVisible) requestAnimationFrame(road); else setTimeout(()=>requestAnimationFrame(road),500);
+    }
+    rsz();addEventListener('resize',rsz);requestAnimationFrame(road);
+
+    // 弧
+    const arc=document.getElementById('arcFill');
+    if(arc){arc.style.strokeDashoffset='1050';setTimeout(()=>arc.style.strokeDashoffset='400',600)}
+
+    // ── 看板：scroll 驅動 scale ──
+    const scenes=document.querySelectorAll('.scene');
+    function tick(){
+        const vh=innerHeight;
+        scenes.forEach(sc=>{
+            const card=sc.querySelector('.card');
+            const rect=sc.getBoundingClientRect();
+            const sceneH=sc.offsetHeight;
+
+            // progress: 0 = scene 頂部在畫面底部, 1 = scene 底部在畫面頂部
+            const raw = -rect.top / (sceneH - vh);
+            const progress = Math.max(0, Math.min(1, raw));
+
+            // phase 1: 0→0.35 飛近（從消失點 scale 0.1 → 1）
+            // phase 2: 0.35→0.55 停留（scale 1, full opacity）
+            // phase 3: 0.55→1 飛過（scale 1→2, opacity 1→0）
+
+            let scale, opacity, ty;
+
+            if(progress < 0.35){
+                const t = progress / 0.35;
+                const ease = 1 - (1 - t) * (1 - t) * (1 - t); // easeOutCubic
+                scale = 0.08 + 0.92 * ease;
+                opacity = Math.pow(ease, 0.5);
+                ty = -35 * (1 - ease);
+            } else if(progress < 0.55){
+                scale = 1;
+                opacity = 1;
+                ty = 0;
+            } else {
+                const t = (progress - 0.55) / 0.45;
+                scale = 1 + 1.2 * t;
+                opacity = 1;
+                ty = 10 * t;
+            }
+
+            card.style.transform = `scale(${scale}) translateY(${ty}vh)`;
+            card.style.opacity = opacity;
+        });
+        if(pageVisible) requestAnimationFrame(tick); else setTimeout(()=>requestAnimationFrame(tick),500);
+    }
+    requestAnimationFrame(tick);
+
+    // ── 六角形雷達圖（ColorfulRadarChart）──
+    const rc = document.getElementById('radarChart');
+    if (rc) {
+        const rx = rc.getContext('2d');
+        // 780x780 canvas → CSS 260x260 = 3x retina
+        const S = 780, C = S / 2, R = 240;
+        const labels = ['安全','速控','續航','精準','穩定','經驗'];
+        const colors = ['#34C759','#007AFF','#5AC8FA','#AF52DE','#FF9500','#FF2D55'];
+        const values = [0.85, 0.72, 0.6, 0.45, 0.78, 0.65];
+        const sides = 6;
+
+        function pt(i, scale) {
+            const a = (i / sides) * Math.PI * 2 - Math.PI / 2;
+            return [C + Math.cos(a) * R * scale, C + Math.sin(a) * R * scale];
+        }
+        function hexPath(scale) {
+            rx.beginPath();
+            for (let i = 0; i < sides; i++) {
+                const [x, y] = pt(i, scale);
+                i === 0 ? rx.moveTo(x, y) : rx.lineTo(x, y);
+            }
+            rx.closePath();
+        }
+
+        // 背景網格
+        [0.33, 0.66, 1.0].forEach(s => {
+            hexPath(s);
+            rx.strokeStyle = 'rgba(255,255,255,0.12)'; rx.lineWidth = 2; rx.stroke();
+        });
+        // 軸線
+        for (let i = 0; i < sides; i++) {
+            const [x, y] = pt(i, 1.0);
+            rx.beginPath(); rx.moveTo(C, C); rx.lineTo(x, y);
+            rx.strokeStyle = 'rgba(255,255,255,0.08)'; rx.lineWidth = 1.5; rx.stroke();
+        }
+        // 資料填充
+        rx.beginPath();
+        for (let i = 0; i < sides; i++) {
+            const [x, y] = pt(i, values[i]);
+            i === 0 ? rx.moveTo(x, y) : rx.lineTo(x, y);
+        }
+        rx.closePath();
+        const grd = rx.createLinearGradient(C, C - R, C, C + R);
+        grd.addColorStop(0, 'rgba(52,199,89,0.25)'); grd.addColorStop(1, 'rgba(52,199,89,0.05)');
+        rx.fillStyle = grd; rx.fill();
+        // 彩色邊框
+        for (let i = 0; i < sides; i++) {
+            const next = (i + 1) % sides;
+            const [x1, y1] = pt(i, values[i]);
+            const [x2, y2] = pt(next, values[next]);
+            const lg = rx.createLinearGradient(x1, y1, x2, y2);
+            lg.addColorStop(0, colors[i]); lg.addColorStop(1, colors[next]);
+            rx.beginPath(); rx.moveTo(x1, y1); rx.lineTo(x2, y2);
+            rx.strokeStyle = lg; rx.lineWidth = 5; rx.stroke();
+        }
+        // 彩色頂點
+        for (let i = 0; i < sides; i++) {
+            const [x, y] = pt(i, values[i]);
+            rx.beginPath(); rx.arc(x, y, 10, 0, Math.PI * 2);
+            rx.fillStyle = colors[i]; rx.fill();
+            rx.shadowColor = colors[i]; rx.shadowBlur = 15; rx.fill(); rx.shadowBlur = 0;
+        }
+        // 數值 + 標籤
+        rx.textAlign = 'center'; rx.textBaseline = 'middle';
+        for (let i = 0; i < sides; i++) {
+            const [x, y] = pt(i, 1.35);
+            const val = (values[i] * 10).toFixed(1);
+            rx.font = 'bold 36px -apple-system, sans-serif';
+            rx.fillStyle = colors[i]; rx.fillText(val, x, y - 18);
+            rx.font = '500 28px -apple-system, sans-serif';
+            rx.fillStyle = 'rgba(255,255,255,0.4)'; rx.fillText(labels[i], x, y + 20);
+        }
+    }
+    // ── 警示模擬器動畫 ──
+    const simScreen = document.getElementById('simScreen');
+    const simGuardian = document.getElementById('simGuardian');
+    const simApproach = document.getElementById('simApproach');
+    const simPassed = document.getElementById('simPassed');
+    const simSpeed = document.getElementById('simSpeed');
+    const simDist = document.getElementById('simDist');
+    const simBar = document.getElementById('simBar');
+    const simDivider = simApproach ? simApproach.querySelector('.sim-divider') : null;
+
+    if (simScreen) {
+        let simStarted = false;
+        let simDone = false;
+
+        const simObs = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && !simStarted) {
+                simStarted = true;
+                runAlertSim();
+            }
+        }, { threshold: 0.5 });
+        simObs.observe(simScreen);
+
+        function runAlertSim() {
+            const steps = [
+                // [delay, phase, speed, dist, progress, bgColors, borderColor, speedColor, distColor, divColor]
+                { t:0,    phase:'guardian' },
+                { t:1200, phase:'approach', spd:92, dist:'800m', prog:20,
+                  bg:'linear-gradient(#2E2100,#0D0800)', border:'rgba(255,176,40,.3)',
+                  spdC:'#fff', distC:'rgba(255,220,150,.9)', divC:'rgba(255,176,40,.2)' },
+                { t:2200, spd:88, dist:'500m', prog:45,
+                  bg:'linear-gradient(#3D2A00,#100A00)', border:'rgba(255,176,40,.4)',
+                  spdC:'#fff', distC:'rgba(255,200,120,.9)', divC:'rgba(255,176,40,.3)' },
+                { t:3000, spd:82, dist:'300m', prog:65,
+                  bg:'linear-gradient(#4A2A00,#140A00)', border:'rgba(255,140,30,.5)',
+                  spdC:'#fff', distC:'rgba(255,180,100,.9)', divC:'rgba(255,140,30,.3)' },
+                { t:3600, spd:68, dist:'100m', prog:85,
+                  bg:'linear-gradient(#4A2000,#180800)', border:'rgba(255,120,20,.6)',
+                  spdC:'#fff', distC:'rgba(255,160,80,.9)', divC:'rgba(255,120,20,.35)' },
+                { t:4200, spd:52, dist:'20m', prog:97,
+                  bg:'linear-gradient(#3A1800,#120600)', border:'rgba(255,100,20,.5)',
+                  spdC:'#fff', distC:'rgba(255,140,60,.9)', divC:'rgba(255,100,20,.3)' },
+                { t:4800, phase:'passed' },
+                { t:6500, phase:'reset' },
+            ];
+
+            steps.forEach(s => {
+                setTimeout(() => {
+                    if (s.phase === 'guardian') {
+                        simGuardian.style.opacity = 1;
+                        simApproach.style.opacity = 0;
+                        simPassed.style.opacity = 0;
+                        simScreen.style.background = '#0A0A0F';
+                        simScreen.style.boxShadow = '0 0 0 3px rgba(255,255,255,.08),0 30px 60px rgba(0,0,0,.5)';
+                    } else if (s.phase === 'approach') {
+                        simGuardian.style.opacity = 0;
+                        simApproach.style.opacity = 1;
+                        simScreen.style.background = s.bg;
+                        simScreen.style.boxShadow = '0 0 0 2px ' + s.border + ',0 30px 60px rgba(0,0,0,.5)';
+                        simSpeed.textContent = s.spd;
+                        simSpeed.style.color = s.spdC;
+                        simDist.textContent = s.dist;
+                        simDist.style.color = s.distC;
+                        if(simDivider) simDivider.style.background = s.divC;
+                        simBar.style.width = s.prog + '%';
+                        simBar.style.background = 'linear-gradient(90deg,#FFB428,#FFD262)';
+                    } else if (s.phase === 'passed') {
+                        simApproach.style.opacity = 0;
+                        simPassed.style.opacity = 1;
+                        simScreen.style.background = '#0A0A0F';
+                        simScreen.style.boxShadow = '0 0 0 3px rgba(52,199,89,.3),0 30px 60px rgba(0,0,0,.5)';
+                    } else if (s.phase === 'reset') {
+                        simStarted = false;
+                        simPassed.style.opacity = 0;
+                        simGuardian.style.opacity = 1;
+                        simScreen.style.background = '#0A0A0F';
+                        simScreen.style.boxShadow = '0 0 0 3px rgba(255,255,255,.08),0 30px 60px rgba(0,0,0,.5)';
+                        simBar.style.width = '0%';
+                    }
+
+                    // 中間 step（非 phase 切換，只更新數值）
+                    if (!s.phase && s.spd) {
+                        simSpeed.textContent = s.spd;
+                        simDist.textContent = s.dist;
+                        simDist.style.color = s.distC;
+                        simBar.style.width = s.prog + '%';
+                        simScreen.style.background = s.bg;
+                        simScreen.style.boxShadow = '0 0 0 2px ' + s.border + ',0 30px 60px rgba(0,0,0,.5)';
+                        if(simDivider) simDivider.style.background = s.divC;
+                    }
+                }, s.t);
+            });
+        }
+    }
+
+    // ── 儀表板小道路 canvas 動畫 ──
+    const dashRoadCv = document.getElementById('dashRoadCv');
+    let dashRoadColor = 'rgba(255,255,255,.18)';
+    if (dashRoadCv) {
+        const drx = dashRoadCv.getContext('2d');
+        // canvas 原始像素 280×240，CSS 顯示寬度由容器決定
+        const dW = 280, dH = 240;
+        function drawDashRoad(t) {
+            drx.clearRect(0, 0, dW, dH);
+            const vx = dW / 2, tw = 4, bw = dW * 0.98;
+            // 路面
+            drx.beginPath();
+            drx.moveTo(vx - tw / 2, 0); drx.lineTo(vx + tw / 2, 0);
+            drx.lineTo(vx + bw / 2, dH); drx.lineTo(vx - bw / 2, dH);
+            drx.closePath();
+            drx.fillStyle = '#18181C'; drx.fill();
+            // 虛線車道
+            const p = (t % 2200) / 2200;
+            [-0.18, 0.18].forEach(o => {
+                for (let i = -1; i < 12; i++) {
+                    const s = Math.max(0, (i + p) / 12), e = Math.min(1, s + 0.35 / 12);
+                    if (e <= 0 || s >= 1) continue;
+                    const ps = Math.pow(s, 2.2), pe = Math.pow(e, 2.2);
+                    const x1 = vx + (bw * o - tw * o) * ps + tw * o;
+                    const x2 = vx + (bw * o - tw * o) * pe + tw * o;
+                    const l1 = 3.5 * ps, l2 = 3.5 * pe;
+                    drx.beginPath();
+                    drx.moveTo(x1 - l1 / 2, dH * ps); drx.lineTo(x1 + l1 / 2, dH * ps);
+                    drx.lineTo(x2 + l2 / 2, dH * pe); drx.lineTo(x2 - l2 / 2, dH * pe);
+                    drx.closePath();
+                    drx.fillStyle = dashRoadColor; drx.fill();
+                }
+            });
+            // 頂部漸層融合
+            const grd = drx.createLinearGradient(0, 0, 0, dH * 0.4);
+            grd.addColorStop(0, '#0A0A0F'); grd.addColorStop(1, 'rgba(10,10,15,0)');
+            drx.fillStyle = grd; drx.fillRect(0, 0, dW, dH * 0.4);
+            if(pageVisible) requestAnimationFrame(drawDashRoad); else setTimeout(()=>requestAnimationFrame(drawDashRoad),500);
+        }
+        requestAnimationFrame(drawDashRoad);
+    }
+
+    // ── 雙手機模擬器動畫 ──
+    const dualPhones = document.getElementById('dualPhones');
+    if (dualPhones) {
+        const phoneDash = document.getElementById('phoneDash');
+        const phoneMin = document.getElementById('phoneMin');
+        const dashArc = document.getElementById('dashArc');
+        const dashSpeed = document.getElementById('dashSpeed');
+        const dashStatusText = document.getElementById('dashStatusText');
+        const dashCruise = document.getElementById('dashCruise');
+        const dashLimitBadge = document.getElementById('dashLimitBadge');
+        const dashLimitTick = document.getElementById('dashLimitTick');
+        const dashCard = document.getElementById('dashCard');
+        const dashCardDist = document.getElementById('dashCardDist');
+        const dashPassed = document.getElementById('dashPassed');
+        const minFrame = document.getElementById('minFrame');
+        const minGuardian = document.getElementById('minGuardian');
+        const minAlert = document.getElementById('minAlert');
+        const minSpeed = document.getElementById('minSpeed');
+        const minDist = document.getElementById('minDist');
+        const minDivider = document.getElementById('minDivider');
+        const minBar = document.getElementById('minBar');
+        const minPassed = document.getElementById('minPassed');
+
+        let dualStarted = false;
+        // Arc math: total arc = 424, speed 0→180, offset 424=0km/h, 0=180km/h
+        function spdOffset(kmh) { return 424 - (kmh / 180) * 424; }
+
+        const dualObs = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && !dualStarted) {
+                dualStarted = true;
+                runDualSim();
+            }
+        }, { threshold: 0.4 });
+        dualObs.observe(dualPhones);
+
+        function runDualSim() {
+            const amberBg = 'linear-gradient(to bottom, rgba(74,54,0,.9), rgba(40,30,0,.8), rgba(13,7,0,.9))';
+            const amberBorder = '0 0 0 2px rgba(255,176,40,.35), 0 20px 40px rgba(0,0,0,.5)';
+            const darkBg = '#0A0A0F';
+            const defaultShadow = '0 0 0 2px rgba(255,255,255,.08), 0 20px 40px rgba(0,0,0,.5)';
+            const greenShadow = '0 0 0 2px rgba(52,199,89,.3), 0 20px 40px rgba(0,0,0,.5)';
+
+            const steps = [
+                // Guardian state — reset
+                { t: 0, fn() {
+                    dashArc.setAttribute('stroke', '#34C759');
+                    dashArc.style.strokeDashoffset = spdOffset(0);
+                    dashSpeed.textContent = '0'; dashSpeed.style.color = '#fff';
+                    dashCruise.style.display = ''; dashLimitBadge.style.display = 'none';
+                    dashLimitTick.setAttribute('opacity', '0');
+                    dashCard.style.opacity = '0'; dashPassed.style.opacity = '0';
+                    dashStatusText.textContent = '巡航中'; dashStatusText.style.color = 'rgba(255,255,255,.4)';
+                    phoneDash.style.boxShadow = defaultShadow;
+                    dashRoadColor = 'rgba(255,255,255,.12)';
+
+                    minFrame.style.background = darkBg;
+                    minGuardian.style.opacity = '1'; minAlert.style.opacity = '0'; minPassed.style.opacity = '0';
+                    phoneMin.style.boxShadow = defaultShadow;
+                    minBar.style.width = '0%';
+                }},
+                // Cruising speed ramp
+                { t: 700, fn() { dashSpeed.textContent = '45'; dashArc.style.strokeDashoffset = spdOffset(45); }},
+                { t: 1100, fn() { dashSpeed.textContent = '72'; dashArc.style.strokeDashoffset = spdOffset(72); }},
+                { t: 1500, fn() { dashSpeed.textContent = '88'; dashArc.style.strokeDashoffset = spdOffset(88); }},
+                // Alert — approaching
+                { t: 2100, fn() {
+                    // Dashboard: arc→amber, center→limit badge, card appears
+                    dashArc.setAttribute('stroke', '#FFB428');
+                    dashArc.style.strokeDashoffset = spdOffset(92);
+                    dashSpeed.textContent = '92'; dashSpeed.style.color = '#FFB428';
+                    dashCruise.style.display = 'none'; dashLimitBadge.style.display = '';
+                    dashLimitTick.setAttribute('opacity', '1');
+                    dashCard.style.opacity = '1'; dashCardDist.textContent = '800m';
+                    dashStatusText.textContent = '接近中'; dashStatusText.style.color = '#FFB428';
+                    dashRoadColor = 'rgba(255,180,40,.15)';
+
+                    // Minimal: full amber
+                    minGuardian.style.opacity = '0'; minAlert.style.opacity = '1';
+                    minFrame.style.background = amberBg;
+                    phoneMin.style.boxShadow = amberBorder;
+                    minSpeed.textContent = '92'; minSpeed.style.color = '#fff';
+                    minDist.textContent = '800m'; minDist.style.color = 'rgba(255,220,150,.9)';
+                    minDivider.style.background = 'rgba(255,176,40,.25)';
+                    minBar.style.width = '20%'; minBar.style.background = 'linear-gradient(90deg,#FFB428,#FFD262)';
+                }},
+                { t: 2800, fn() {
+                    dashSpeed.textContent = '85'; dashArc.style.strokeDashoffset = spdOffset(85); dashCardDist.textContent = '500m';
+                    minSpeed.textContent = '85'; minDist.textContent = '500m'; minBar.style.width = '42%';
+                }},
+                { t: 3400, fn() {
+                    dashSpeed.textContent = '72'; dashArc.style.strokeDashoffset = spdOffset(72); dashCardDist.textContent = '300m';
+                    minSpeed.textContent = '72'; minDist.textContent = '300m'; minBar.style.width = '62%';
+                }},
+                { t: 3900, fn() {
+                    dashSpeed.textContent = '58'; dashArc.style.strokeDashoffset = spdOffset(58); dashCardDist.textContent = '100m';
+                    minSpeed.textContent = '58'; minDist.textContent = '100m'; minBar.style.width = '83%';
+                }},
+                { t: 4400, fn() {
+                    dashSpeed.textContent = '48'; dashArc.style.strokeDashoffset = spdOffset(48); dashCardDist.textContent = '20m';
+                    minSpeed.textContent = '48'; minDist.textContent = '20m'; minBar.style.width = '96%';
+                }},
+                // Passed
+                { t: 4900, fn() {
+                    dashPassed.style.opacity = '1';
+                    dashArc.setAttribute('stroke', '#34C759');
+                    dashStatusText.textContent = '安全通過'; dashStatusText.style.color = '#34C759';
+                    phoneDash.style.boxShadow = greenShadow;
+                    dashRoadColor = 'rgba(255,255,255,.12)';
+
+                    minAlert.style.opacity = '0'; minPassed.style.opacity = '1';
+                    minFrame.style.background = darkBg;
+                    phoneMin.style.boxShadow = greenShadow;
+                    minBar.style.width = '0%';
+                }},
+                // Reset
+                { t: 7200, fn() { dualStarted = false; }},
+            ];
+
+            steps.forEach(s => setTimeout(s.fn, s.t));
+        }
+    }
+
+    // ── 段位徽章列（精確對照 App RankShield）──
+    const bs = document.getElementById('badgeStrip');
+    if (bs) {
+        // 2400x300 canvas, CSS auto-scales via max-width
+        const bx = bs.getContext('2d');
+        // Colors from LevelSystem.swift (RGB 0-1 → hex)
+        const ranks = [
+            { name:'菜鳥上路',    r:0.55, g:0.65, b:0.55, tier:1 },
+            { name:'三寶剋星',    r:0.72, g:0.45, b:0.20, tier:1 },
+            { name:'國道常客',    r:0.65, g:0.68, b:0.72, tier:1 },
+            { name:'馬路老鳥',    r:0.85, g:0.65, b:0.13, tier:1 },
+            { name:'國道小飛俠',  r:0.45, g:0.75, b:0.85, tier:2 },
+            { name:'秋名山畢業',  r:0.55, g:0.55, b:1.0,  tier:2 },
+            { name:'道路守護者',  r:0.85, g:0.35, b:0.85, tier:2 },
+            { name:'公路之王',    r:1.0,  g:0.35, b:0.35, tier:3 },
+            { name:'山道傳說',    r:1.0,  g:0.55, b:0.10, tier:3 },
+            { name:'照不到之巔',  r:1.0,  g:1.0,  b:0.85, tier:3 },
+        ];
+        function rgba(rk, a) {
+            return `rgba(${Math.round(rk.r*255)},${Math.round(rk.g*255)},${Math.round(rk.b*255)},${a})`;
+        }
+
+        const sz = 110;
+        const gap = 28;
+        const canvasW = 2400, canvasH = 300;
+        const totalW = 10 * (sz * 1.35) + 9 * gap;
+        const startX = (canvasW - totalW) / 2;
+        const cy = 120;
+
+        // RoundedHexagon with corner radius (quadratic curves)
+        function roundedHexPath(ctx, cx, cy, r, cr) {
+            const clampCr = Math.min(cr, r * 0.3);
+            ctx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                const a0 = (i / 6) * Math.PI * 2 - Math.PI / 2;
+                const a1 = ((i + 1) / 6) * Math.PI * 2 - Math.PI / 2;
+                const px = cx + Math.cos(a0) * r, py = cy + Math.sin(a0) * r;
+                const nx = cx + Math.cos(a1) * r, ny = cy + Math.sin(a1) * r;
+                // Pull back from vertex by corner radius
+                const ratio = clampCr / r;
+                const sx = px + (cx - px) * ratio, sy = py + (cy - py) * ratio;
+                const ex = px + (nx - px) * ratio, ey = py + (ny - py) * ratio;
+                if (i === 0) ctx.moveTo(sx, sy);
+                else ctx.lineTo(sx, sy);
+                ctx.quadraticCurveTo(px, py, ex, ey);
+            }
+            ctx.closePath();
+        }
+
+        ranks.forEach((rk, i) => {
+            const cx = startX + i * (sz * 1.35 + gap) + sz * 1.35 / 2;
+
+            bx.save();
+
+            // === TIER 3: 虛線外框 + 光暈 + 頂部菱形 ===
+            if (rk.tier >= 3) {
+                // 光暈
+                bx.shadowColor = rgba(rk, 0.4);
+                bx.shadowBlur = sz * 0.25;
+                roundedHexPath(bx, cx, cy, sz * 1.35 / 2, sz * 0.08);
+                bx.setLineDash([sz * 0.08, sz * 0.06]);
+                bx.strokeStyle = rgba(rk, 0.25);
+                bx.lineWidth = sz * 0.03;
+                bx.stroke();
+                bx.setLineDash([]);
+                bx.shadowBlur = 0;
+
+                // 頂部菱形
+                const dw = sz * 0.14, dh = sz * 0.18;
+                const dy = cy - sz * 0.72;
+                bx.beginPath();
+                bx.moveTo(cx, dy - dh / 2);
+                bx.lineTo(cx + dw / 2, dy);
+                bx.lineTo(cx, dy + dh / 2);
+                bx.lineTo(cx - dw / 2, dy);
+                bx.closePath();
+                bx.fillStyle = rgba(rk, 0.8);
+                bx.fill();
+            }
+
+            // === TIER 2+: 中環（漸層描邊）===
+            if (rk.tier >= 2) {
+                bx.shadowColor = rgba(rk, 0.3);
+                bx.shadowBlur = sz * 0.15;
+                roundedHexPath(bx, cx, cy, sz * 1.15 / 2, sz * 0.1);
+                const mg = bx.createLinearGradient(cx, cy - sz * 0.6, cx, cy + sz * 0.6);
+                mg.addColorStop(0, rgba(rk, 0.5));
+                mg.addColorStop(1, rgba(rk, 0.15));
+                bx.strokeStyle = mg;
+                bx.lineWidth = sz * 0.04;
+                bx.stroke();
+                bx.shadowBlur = 0;
+            }
+
+            // === ALL TIERS: 內層填充（左上→右下漸層）===
+            const innerR = sz * 0.85 / 2;
+            roundedHexPath(bx, cx, cy, innerR, sz * 0.12);
+            const fg = bx.createLinearGradient(cx - innerR, cy - innerR, cx + innerR, cy + innerR);
+            fg.addColorStop(0, rgba(rk, 0.8));
+            fg.addColorStop(1, rgba(rk, 0.35));
+            bx.fillStyle = fg;
+            bx.fill();
+
+            // === ALL TIERS: 內層描邊（上→下漸層）===
+            roundedHexPath(bx, cx, cy, innerR, sz * 0.12);
+            const sg = bx.createLinearGradient(cx, cy - innerR, cx, cy + innerR);
+            sg.addColorStop(0, rgba(rk, 0.9));
+            sg.addColorStop(1, rgba(rk, 0.3));
+            bx.strokeStyle = sg;
+            bx.lineWidth = sz * 0.06;
+            bx.stroke();
+
+            // === IMMORTAL: 放射光線 ===
+            if (rk.name === '照不到之巔') {
+                for (let j = 0; j < 6; j++) {
+                    const a = (j / 6) * Math.PI * 2 - Math.PI / 2;
+                    const x1 = cx + Math.cos(a) * sz * 0.45;
+                    const y1 = cy + Math.sin(a) * sz * 0.45;
+                    const x2 = cx + Math.cos(a) * sz * 0.6;
+                    const y2 = cy + Math.sin(a) * sz * 0.6;
+                    bx.beginPath(); bx.moveTo(x1, y1); bx.lineTo(x2, y2);
+                    bx.strokeStyle = rgba(rk, 0.15);
+                    bx.lineWidth = sz * 0.02;
+                    bx.stroke();
+                }
+            }
+
+            bx.restore();
+
+            // 段位名稱
+            bx.font = '600 20px -apple-system, sans-serif';
+            bx.fillStyle = rgba(rk, 0.7);
+            bx.textAlign = 'center';
+            bx.textBaseline = 'top';
+            bx.fillText(rk.name, cx, cy + innerR + 10);
+        });
+    }
+})();
+</script>
+</body>
+</html>

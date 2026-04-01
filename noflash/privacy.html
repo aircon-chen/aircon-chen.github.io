@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>隱私權政策 — 照不到</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0A0A0F; color: rgba(255,255,255,0.85); font-family: -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.8; }
+        .container { max-width: 640px; margin: 0 auto; padding: 60px 24px; }
+        a { color: #FF6B4A; }
+        h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; color: #fff; }
+        .updated { font-size: 13px; color: rgba(255,255,255,0.3); margin-bottom: 32px; }
+        h2 { font-size: 18px; font-weight: 700; margin-top: 32px; margin-bottom: 12px; color: #fff; }
+        p, li { font-size: 15px; margin-bottom: 12px; }
+        ul { padding-left: 20px; }
+        .back { display: inline-block; margin-bottom: 24px; color: rgba(255,255,255,0.4); text-decoration: none; font-size: 14px; }
+        .back:hover { color: #fff; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back">&larr; 返回照不到</a>
+    <h1>隱私權政策</h1>
+    <p class="updated">最後更新：2026 年 4 月 1 日</p>
+
+    <h2>概述</h2>
+    <p>「照不到」（以下簡稱本 App）是一款測速照相警示工具，旨在提醒駕駛人注意前方固定式測速照相、區間測速、闖紅燈照相及科技執法設備。本 App 不鼓勵也不協助任何違反交通法規之行為。</p>
+
+    <h2>資料收集與使用</h2>
+    <p>本 App 採取本地優先（local-first）架構，盡量減少資料傳輸：</p>
+    <ul>
+        <li><strong>位置資料</strong>：僅在裝置上即時處理，用於偵測附近測速照相並計算行駛速度。位置資料不會上傳至任何伺服器。</li>
+        <li><strong>行程紀錄</strong>：安全評分、距離、速度等統計資料僅儲存在您的裝置上（UserDefaults），不會傳輸至外部。</li>
+        <li><strong>測速照相資料</strong>：從 Cloudflare R2 下載政府開放資料加工後的測速點位資料庫，僅下載不上傳。</li>
+        <li><strong>動態感測器</strong>：加速度計與氣壓計資料僅在裝置上處理，用於提高偵測精確度。</li>
+    </ul>
+
+    <h2>第三方服務</h2>
+    <ul>
+        <li><strong>Google AdMob</strong>：用於顯示廣告。AdMob 可能收集裝置識別碼等資訊，詳見 <a href="https://policies.google.com/privacy" target="_blank">Google 隱私權政策</a>。您可透過 App Tracking Transparency（ATT）選擇是否允許追蹤。</li>
+        <li><strong>Firebase Analytics</strong>：用於匿名使用分析，幫助我們改善 App 體驗。</li>
+        <li><strong>Firebase Crashlytics</strong>：用於收集崩潰報告，幫助我們修復問題。</li>
+        <li><strong>Cloudflare R2</strong>：用於託管測速照相資料庫，僅提供資料下載服務。</li>
+    </ul>
+
+    <h2>廣告與追蹤</h2>
+    <p>本 App 使用 Google AdMob 顯示廣告。首次使用時，我們會透過 Apple 的 App Tracking Transparency（ATT）框架詢問您是否允許追蹤。您可以隨時在 iOS 設定中變更此選擇。</p>
+
+    <h2>資料儲存與安全</h2>
+    <p>所有個人駕駛資料（行程紀錄、等級、設定）僅儲存在您的裝置上，我們無法存取。測速照相資料庫以加密方式儲存在裝置本地。</p>
+
+    <h2>兒童隱私</h2>
+    <p>本 App 不針對 13 歲以下兒童設計，也不會刻意收集兒童的個人資料。</p>
+
+    <h2>您的權利</h2>
+    <p>您可以隨時：</p>
+    <ul>
+        <li>在 iOS 設定中關閉位置權限</li>
+        <li>在 iOS 設定中關閉廣告追蹤</li>
+        <li>刪除 App 以移除所有本地資料</li>
+    </ul>
+
+    <h2>政策變更</h2>
+    <p>本政策如有修改，我們會在 App 內及本頁面公告。建議您定期查閱。</p>
+
+    <h2>聯絡我們</h2>
+    <p>如有任何隱私相關問題，請聯繫：<a href="mailto:noflash.app@gmail.com">noflash.app@gmail.com</a></p>
+</div>
+</body>
+</html>
