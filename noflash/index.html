@@ -497,9 +497,11 @@
 
     // ── 看板：scroll 驅動 scale ──
     const scenes=document.querySelectorAll('.scene');
+    const lastScene=scenes[scenes.length-1];
     function tick(){
         const vh=innerHeight;
         scenes.forEach(sc=>{
+            const isLast = sc === lastScene;
             const card=sc.querySelector('.card');
             const rect=sc.getBoundingClientRect();
             const sceneH=sc.offsetHeight;
@@ -526,9 +528,8 @@
                 ty = 0;
             } else {
                 const t = (progress - 0.55) / 0.45;
-                scale = 1 + 1.2 * t;
-                opacity = 1 - t * t;
-                ty = 10 * t;
+                if (isLast) { scale = 1; opacity = 1; ty = 0; }
+                else { scale = 1 + 1.2 * t; opacity = 1 - t * t; ty = 10 * t; }
             }
 
             card.style.transform = `scale(${scale}) translateY(${ty}vh)`;
