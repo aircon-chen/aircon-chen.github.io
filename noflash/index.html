@@ -34,6 +34,35 @@
       "image": "https://aircon-chen.github.io/noflash/app-icon.png"
     }
     </script>
+    <!-- Firebase Analytics -->
+    <script type="module">
+    import{initializeApp}from"https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+    import{getAnalytics,logEvent}from"https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+    const app=initializeApp({apiKey:"AIzaSyAS9F4UwN0XCJWN20VDi6XGsQyH0J3pW8U",authDomain:"noflash-63553.firebaseapp.com",projectId:"noflash-63553",storageBucket:"noflash-63553.firebasestorage.app",messagingSenderId:"343175592399",appId:"1:343175592399:web:9e42783024df0922b0baba",measurementId:"G-7LXS3LBK2W"});
+    const analytics=getAnalytics(app);
+    window._fbLog=function(name,params){logEvent(analytics,name,params||{})};
+
+    // 滾動深度追蹤
+    let scrollMarks={25:false,50:false,75:false,100:false};
+    window.addEventListener('scroll',()=>{
+        const pct=Math.round((window.scrollY/(document.body.scrollHeight-window.innerHeight))*100);
+        [25,50,75,100].forEach(m=>{if(pct>=m&&!scrollMarks[m]){scrollMarks[m]=true;window._fbLog('scroll_depth',{percent:m})}});
+    },{passive:true});
+
+    // 區塊曝光追蹤
+    document.querySelectorAll('[data-board]').forEach((el,i)=>{
+        const obs=new IntersectionObserver(entries=>{
+            if(entries[0].isIntersecting){window._fbLog('section_view',{section_index:i,section_title:el.querySelector('h2')?.textContent||'unknown'});obs.disconnect()}
+        },{threshold:0.5});
+        obs.observe(el);
+    });
+
+    // CTA 點擊追蹤（App Store 按鈕）
+    document.addEventListener('click',e=>{
+        const a=e.target.closest('a[href*="apps.apple.com"],a[href*="itunes.apple.com"],.coming-soon');
+        if(a)window._fbLog('cta_click',{label:a.textContent.trim().slice(0,50)});
+    });
+    </script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--bg:#0A0A0F;--green:#34C759;--accent:#FF6B4A;--amber:#FFB428}
