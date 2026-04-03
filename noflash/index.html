@@ -430,6 +430,49 @@
     <p style="margin-top:16px;font-size:clamp(14px,3.5vw,17px)">從 <span class="g">菜鳥上路</span> 到 <span class="a">照不到之巔</span></p>
 </div></div></div>
 
+<!-- ── 駕駛評分動畫 ── -->
+<div class="scene"><div class="scene-pin"><div class="card" data-board>
+    <h2 style="margin-bottom:4px">每趟行程，都有評分</h2>
+    <p style="color:rgba(255,255,255,.4);font-size:13px;margin-bottom:20px">行程結束後自動計算駕駛安全分數</p>
+    <div id="scorePhone" style="position:relative;width:min(280px,72vw);height:min(520px,134vw);margin:0 auto;border-radius:36px;overflow:hidden;border:3px solid rgba(255,255,255,.12);background:#0A0A0A;padding:24px 20px">
+        <p style="text-align:center;font-size:12px;color:rgba(255,255,255,.35);letter-spacing:2px;margin-bottom:16px">行程結束</p>
+        <!-- 圓環 -->
+        <div style="position:relative;width:min(160px,42vw);height:min(160px,42vw);margin:0 auto">
+            <svg id="scoreRing" viewBox="0 0 160 160" style="width:100%;height:100%;transform:rotate(-90deg)">
+                <circle cx="80" cy="80" r="68" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="10"/>
+                <circle id="scoreArc" cx="80" cy="80" r="68" fill="none" stroke="#34C759" stroke-width="10" stroke-linecap="round" stroke-dasharray="427" stroke-dashoffset="427" style="transition:none;filter:drop-shadow(0 0 12px rgba(52,199,89,.4))"/>
+            </svg>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
+                <span id="scoreNum" style="font-size:min(48px,12vw);font-weight:800;color:#34C759;font-variant-numeric:tabular-nums;line-height:1">0</span>
+                <p style="font-size:10px;color:rgba(255,255,255,.3);margin-top:2px">安全分</p>
+            </div>
+        </div>
+        <p id="scoreVerdict" style="text-align:center;font-size:14px;font-weight:600;color:#34C759;margin-top:10px;opacity:0;transition:opacity .4s">優秀的安全駕駛！</p>
+        <div id="scoreStreak" style="text-align:center;margin-top:8px;opacity:0;transition:opacity .4s">
+            <span style="display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.06);padding:4px 12px;border-radius:20px;font-size:11px;color:rgba(255,255,255,.45)">🔥 連續 7 天安全駕駛</span>
+        </div>
+        <!-- 統計格 -->
+        <div id="scoreStats" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px">
+            <div class="ss" style="opacity:0;background:rgba(255,255,255,.04);border-radius:12px;padding:10px 12px;transition:opacity .3s,transform .3s;transform:translateY(8px)">
+                <p style="font-size:9px;color:rgba(255,255,255,.3)">行駛距離</p>
+                <p style="font-size:16px;font-weight:700;color:rgba(255,255,255,.85);margin-top:2px">25.3 km</p>
+            </div>
+            <div class="ss" style="opacity:0;background:rgba(255,255,255,.04);border-radius:12px;padding:10px 12px;transition:opacity .3s,transform .3s;transform:translateY(8px)">
+                <p style="font-size:9px;color:rgba(255,255,255,.3)">行駛時間</p>
+                <p style="font-size:16px;font-weight:700;color:rgba(255,255,255,.85);margin-top:2px">38 分鐘</p>
+            </div>
+            <div class="ss" style="opacity:0;background:rgba(255,255,255,.04);border-radius:12px;padding:10px 12px;transition:opacity .3s,transform .3s;transform:translateY(8px)">
+                <p style="font-size:9px;color:rgba(255,255,255,.3)">經過測速點</p>
+                <p style="font-size:16px;font-weight:700;color:rgba(255,255,255,.85);margin-top:2px">5 個</p>
+            </div>
+            <div class="ss" style="opacity:0;background:rgba(255,255,255,.04);border-radius:12px;padding:10px 12px;transition:opacity .3s,transform .3s;transform:translateY(8px)">
+                <p style="font-size:9px;color:rgba(255,255,255,.3)">超速次數</p>
+                <p style="font-size:16px;font-weight:700;color:#34C759;margin-top:2px">0 次</p>
+            </div>
+        </div>
+    </div>
+</div></div></div>
+
 <div class="scene"><div class="scene-pin" style="pointer-events:auto"><div class="card" data-board>
     <svg class="cta-gauge-svg" viewBox="0 0 480 480" style="margin-bottom:8px">
         <path class="gauge-arc-bg" d="M 45 400 A 215 215 0 1 1 435 400"/>
@@ -1003,6 +1046,102 @@
             bx.fillText(rk.name, cx, cy + innerR + 10);
         });
     }
+})();
+
+// ── 駕駛評分跑分動畫 ──
+(function(){
+    const phone = document.getElementById('scorePhone');
+    if (!phone) return;
+
+    const arc = document.getElementById('scoreArc');
+    const num = document.getElementById('scoreNum');
+    const verdict = document.getElementById('scoreVerdict');
+    const streak = document.getElementById('scoreStreak');
+    const stats = document.querySelectorAll('#scoreStats .ss');
+    const TARGET = 94;
+    const CIRCUMFERENCE = 427; // 2 * PI * 68
+    let hasPlayed = false;
+
+    function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+
+    function scoreColor(score) {
+        if (score < 40) return '#FF3B30';
+        if (score < 60) return '#FF9500';
+        if (score < 80) return '#FFB428';
+        return '#34C759';
+    }
+
+    function reset() {
+        arc.style.transition = 'none';
+        arc.style.strokeDashoffset = CIRCUMFERENCE;
+        arc.style.stroke = 'rgba(255,255,255,.1)';
+        num.textContent = '0';
+        num.style.color = 'rgba(255,255,255,.2)';
+        verdict.style.opacity = '0';
+        streak.style.opacity = '0';
+        stats.forEach(s => { s.style.opacity = '0'; s.style.transform = 'translateY(8px)'; });
+        hasPlayed = false;
+    }
+
+    async function animate() {
+        if (hasPlayed) return;
+        hasPlayed = true;
+
+        // Phase 1: 分數跑分（0 → 94，2.5 秒）
+        const duration = 2500;
+        const start = performance.now();
+
+        await new Promise(resolve => {
+            function tick(now) {
+                const elapsed = now - start;
+                const t = Math.min(elapsed / duration, 1);
+                const eased = easeOutQuart(t);
+                const score = Math.round(eased * TARGET);
+
+                num.textContent = score;
+                const color = scoreColor(score);
+                num.style.color = color;
+                arc.style.stroke = color;
+                arc.style.filter = `drop-shadow(0 0 12px ${color}40)`;
+
+                const offset = CIRCUMFERENCE - (CIRCUMFERENCE * (score / 100));
+                arc.style.strokeDashoffset = offset;
+
+                if (t < 1) requestAnimationFrame(tick);
+                else resolve();
+            }
+            requestAnimationFrame(tick);
+        });
+
+        // Phase 2: 評語淡入（0.3 秒後）
+        await new Promise(r => setTimeout(r, 300));
+        verdict.style.opacity = '1';
+
+        // Phase 3: 連續天數淡入
+        await new Promise(r => setTimeout(r, 400));
+        streak.style.opacity = '1';
+
+        // Phase 4: 統計格逐一彈出（每個間隔 200ms）
+        for (let i = 0; i < stats.length; i++) {
+            await new Promise(r => setTimeout(r, 200));
+            stats[i].style.opacity = '1';
+            stats[i].style.transform = 'translateY(0)';
+        }
+
+        // Phase 5: 停留 3 秒後重置，等下次進入視窗再播
+        await new Promise(r => setTimeout(r, 3000));
+        reset();
+    }
+
+    reset();
+
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting && !hasPlayed) animate();
+            if (!e.isIntersecting && hasPlayed) reset();
+        });
+    }, { threshold: 0.4 });
+    obs.observe(phone);
 })();
 </script>
 </body>
