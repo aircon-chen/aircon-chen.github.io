@@ -3,10 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SightReading - 視譜練習</title>
-    <meta name="description" content="SightReading 視譜練習 — 鋼琴初學者的五線譜辨識訓練 APP。隨機音符、模擬鍵盤、限時挑戰、關卡模式。">
+    <title>SightReading - 五線譜識讀練習 App | Piano Sight Reading Practice | 识谱练习</title>
+    <meta name="description" content="免費鋼琴五線譜識讀練習 App。支援高音譜號、低音譜號、音程、節奏、調號練習，限時挑戰與關卡模式。App Store 4.8 星，100+ 五星好評。Free piano sight-reading trainer for iOS & Android.">
+    <meta name="keywords" content="sight reading, 五線譜, 识谱, 视谱练习, 識譜練習, piano practice, 鋼琴練習, 钢琴初学者, 五线谱怎么看, 읽보 연습, ピアノ 初見練習, ABRSM, 音樂考級, sheet music reading, note recognition, treble clef, bass clef">
     <meta name="apple-itunes-app" content="app-id=6743129507">
     <link rel="icon" type="image/png" href="app-icon.png">
+    <link rel="canonical" href="https://aircon-chen.github.io/sightreading/">
+
+    <!-- hreflang for multi-language SEO -->
+    <link rel="alternate" hreflang="zh-Hant" href="https://aircon-chen.github.io/sightreading/">
+    <link rel="alternate" hreflang="zh-Hans" href="https://aircon-chen.github.io/sightreading/?lang=zh-Hans">
+    <link rel="alternate" hreflang="en" href="https://aircon-chen.github.io/sightreading/?lang=en">
+    <link rel="alternate" hreflang="ja" href="https://aircon-chen.github.io/sightreading/?lang=ja">
+    <link rel="alternate" hreflang="ko" href="https://aircon-chen.github.io/sightreading/?lang=ko">
+    <link rel="alternate" hreflang="es" href="https://aircon-chen.github.io/sightreading/?lang=es">
+    <link rel="alternate" hreflang="fr" href="https://aircon-chen.github.io/sightreading/?lang=fr">
+    <link rel="alternate" hreflang="de" href="https://aircon-chen.github.io/sightreading/?lang=de">
+    <link rel="alternate" hreflang="pt" href="https://aircon-chen.github.io/sightreading/?lang=pt-BR">
+    <link rel="alternate" hreflang="x-default" href="https://aircon-chen.github.io/sightreading/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aircon-chen.github.io/sightreading/">
+    <meta property="og:title" content="SightReading - 五線譜識讀練習 App">
+    <meta property="og:description" content="每天 3 分鐘，從看不懂五線譜到快速辨認每個音符。免費下載，支援 iOS 與 Android。">
+    <meta property="og:image" content="https://aircon-chen.github.io/sightreading/app-icon.png">
+    <meta property="og:locale" content="zh_TW">
+    <meta property="og:locale:alternate" content="zh_CN">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta property="og:locale:alternate" content="ja_JP">
+    <meta property="og:site_name" content="SightReading">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="SightReading - Piano Sight Reading Practice App">
+    <meta name="twitter:description" content="3 minutes a day to go from staring at sheet music to instantly reading every note. Free for iOS & Android.">
+    <meta name="twitter:image" content="https://aircon-chen.github.io/sightreading/app-icon.png">
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "SightReading",
+        "alternateName": ["視譜練習", "识谱练习", "五線譜識讀"],
+        "description": "Piano sight-reading practice app. Random notes on staff, piano keyboard, timed challenges, level mode, and detailed statistics.",
+        "applicationCategory": "EducationApplication",
+        "operatingSystem": "iOS, Android",
+        "url": "https://aircon-chen.github.io/sightreading/",
+        "image": "https://aircon-chen.github.io/sightreading/app-icon.png",
+        "screenshot": "https://aircon-chen.github.io/sightreading/screenshot-practice.png",
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "ratingCount": "100",
+            "bestRating": "5"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "downloadUrl": [
+            "https://apps.apple.com/app/id6743129507",
+            "https://play.google.com/store/apps/details?id=tw.aircon.ims"
+        ],
+        "author": {
+            "@type": "Person",
+            "name": "Aircon Chen"
+        },
+        "inLanguage": ["zh-Hant", "zh-Hans", "en", "ja", "ko", "es", "fr", "de", "pt-BR"]
+    }
+    </script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -1153,6 +1221,7 @@
 // === i18n ===
 (function() {
     var KEY = 'sr-lang';
+    var LANGS = ['zh-Hant','zh-Hans','en','ja','ko','es','fr','de','pt-BR'];
     // Map language to screenshot folder (fallback to zh-Hant for zh-Hans)
     var screenshotLangs = ['zh-Hant','en','ja','ko','es','fr','de','pt-BR'];
     function screenshotFolder(lang) {
@@ -1178,6 +1247,11 @@
         try { localStorage.setItem(KEY, lang); } catch(e) {}
     }
     function detect() {
+        // URL ?lang= parameter takes priority (for hreflang SEO)
+        try {
+            var urlLang = new URLSearchParams(window.location.search).get('lang');
+            if (urlLang && LANGS.indexOf(urlLang) !== -1) return urlLang;
+        } catch(e) {}
         try { var s = localStorage.getItem(KEY); if (s) return s; } catch(e) {}
         var b = (navigator.language || '').toLowerCase();
         if (b.indexOf('zh') === 0) {
@@ -1280,6 +1354,34 @@
     });
 })();
 </script>
+
+<!-- SEO: noscript fallback for search engines that don't execute JS -->
+<noscript>
+<div style="max-width:800px;margin:0 auto;padding:40px 24px;color:#f0f0f0;font-family:sans-serif;">
+    <h1>SightReading - 五線譜識讀練習 App | Piano Sight Reading Practice</h1>
+    <p>每天 3 分鐘，從看不懂五線譜到快速辨認每個音符。免費鋼琴視譜練習 App，支援 iOS 與 Android。</p>
+    <p>3 minutes a day to go from staring at sheet music to instantly reading every note. Free piano sight-reading trainer.</p>
+    <p>每天3分钟，从看不懂五线谱到快速辨认每个音符。免费钢琴识谱练习App。</p>
+    <p>1日3分で、五線譜が読めるようになる。無料ピアノ初見練習アプリ。</p>
+    <h2>Features / 功能特色</h2>
+    <ul>
+        <li>Random Note Practice - 隨機音符練習 - 随机音符练习</li>
+        <li>Piano Keyboard - 模擬鋼琴鍵盤 - 模拟钢琴键盘</li>
+        <li>Level Mode - 關卡模式 - 关卡模式</li>
+        <li>Timed Challenge - 限時挑戰 - 限时挑战</li>
+        <li>Statistics - 成績統計 - 成绩统计</li>
+        <li>11 Color Themes - 11 款主題配色</li>
+        <li>Treble Clef & Bass Clef - 高音譜號與低音譜號 - 高音谱号与低音谱号</li>
+        <li>Interval Practice - 音程練習 - 音程练习</li>
+        <li>Rhythm Practice - 節奏練習 - 节奏练习</li>
+        <li>Key Signature Practice - 調號練習 - 调号练习</li>
+    </ul>
+    <h2>Download / 下載</h2>
+    <p><a href="https://apps.apple.com/app/id6743129507">Download on the App Store</a></p>
+    <p><a href="https://play.google.com/store/apps/details?id=tw.aircon.ims">Get it on Google Play</a></p>
+    <p>App Store 4.8★ · 100+ Five-Star Reviews</p>
+</div>
+</noscript>
 
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "74a8ba2b053b4b4685ea06b84af714ae"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
