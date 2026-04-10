@@ -15,10 +15,10 @@
     "nav_screenshots": "ภาพหน้าจอ",
     "nav_features": "ฟีเจอร์",
     "nav_themes": "ธีม",
-    "nav_download": "เร็ว ๆ นี้",
+    "nav_download": "ดาวน์โหลดฟรี",
     "hero_tagline": "โยน ชน รวมร่าง! เกมฟิสิกส์รวมร่างที่หยุดเล่นไม่ได้",
     "hero_tagline_sub": "ตัวละครน่ารัก x ฟิสิกส์การชน x Combo ต่อเนื่อง — คุณจะไปถึง Lv.10 ระเบิดใหญ่ได้ไหม?",
-    "hero_cta": "เร็ว ๆ นี้บน App Store",
+    "hero_cta": "ฟรีบน App Store",
     "hero_sub": "เล่นฟรี · 5 ธีม · 14 ภาษา",
     "hero_img_alt": "ตัวละครเกม Plumble",
     "screenshots_title": "ภาพหน้าจอเกม",
@@ -62,7 +62,7 @@
     "combo_multiplier_prefix": "ตัวคูณคะแนนสูงสุด ",
     "combo_multiplier_suffix": " เท่า",
     "final_cta_title": "พร้อมเริ่มรวมร่างหรือยัง?",
-    "final_cta_subtitle": "ติดตามตอนนี้ รับแจ้งเตือนทันทีที่เปิดให้ดาวน์โหลด",
+    "final_cta_subtitle": "เล่นฟรี — ดาวน์โหลดเลย!",
     "footer_privacy": "นโยบายความเป็นส่วนตัว",
     "footer_back": "กลับหน้าหลัก"
 }

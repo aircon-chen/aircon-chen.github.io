@@ -180,8 +180,9 @@
             font-size: 0.85rem;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             box-shadow: 0 2px 8px rgba(191, 90, 242, 0.25);
-            cursor: default;
-            opacity: 0.7;
+            cursor: pointer;
+            opacity: 1;
+            text-decoration: none;
             pointer-events: none;
             white-space: nowrap;
         }
@@ -349,11 +350,9 @@
             height: 22px;
             fill: currentColor;
         }
-        .btn-appstore.coming-soon {
-            background: linear-gradient(135deg, #4A4A6A, #3A3A5A);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-            cursor: default;
-            pointer-events: none;
+        .btn-appstore:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(191,90,242,0.4);
         }
 
         /* ======================== */
@@ -885,7 +884,7 @@
                 <li><a href="#screenshots">{{nav_screenshots}}</a></li>
                 <li><a href="#features">{{nav_features}}</a></li>
                 <li><a href="#themes">{{nav_themes}}</a></li>
-                <li><span class="nav-download">{{nav_download}}</span></li>
+                <li><a href="https://apps.apple.com/tw/app/drop-merge-smash-puzzle/id6759857971" class="nav-download" target="_blank" rel="noopener noreferrer">{{nav_download}}</a></li>
                 <li class="lang-switcher">
                     <button class="lang-switcher-btn" id="langBtn" aria-label="Switch language">🌐 {{lang_name}} ▾</button>
                     <div class="lang-dropdown" id="langDropdown"></div>
@@ -904,7 +903,7 @@
                 <p class="tagline">{{hero_tagline}}</p>
                 <p class="tagline-sub">{{hero_tagline_sub}}</p>
                 <div class="cta-group">
-                    <a href="#" class="btn-appstore coming-soon" aria-disabled="true" tabindex="-1" role="button">
+                    <a href="https://apps.apple.com/tw/app/drop-merge-smash-puzzle/id6759857971" class="btn-appstore" target="_blank" rel="noopener noreferrer" role="button">
                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
                         {{hero_cta}}
                     </a>
@@ -1073,7 +1072,7 @@
         <section class="final-cta anim">
             <h2 class="section-title">{{final_cta_title}}</h2>
             <p class="section-subtitle">{{final_cta_subtitle}}</p>
-            <a href="#" class="btn-appstore coming-soon" aria-disabled="true" tabindex="-1" role="button">
+            <a href="https://apps.apple.com/tw/app/drop-merge-smash-puzzle/id6759857971" class="btn-appstore" target="_blank" rel="noopener noreferrer" role="button">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
                 {{hero_cta}}
             </a>

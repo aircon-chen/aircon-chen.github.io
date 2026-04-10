@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drop Merge: Smash Puzzle — 掉落合体消消乐 | 5种主题 x 连击</title>
-    <meta name="description" content="Drop Merge: Smash Puzzle 是一款充满欢乐的物理合并游戏。扔下可爱角色，碰撞合体进化，挑战你的最高分！5 大主题、Combo 连锁、支持 14 种语言。">
+    <title>Plumble — 超好玩物理合并游戏 | 5 大主题 x Combo 连锁</title>
+    <meta name="description" content="Plumble 是一款充满欢乐的物理合并游戏。扔下可爱角色，碰撞合体进化，挑战你的最高分！5 大主题、Combo 连锁、支持 14 种语言。">
     <meta name="theme-color" content="#0A0E23">
-    <meta property="og:title" content="Drop Merge: Smash Puzzle — 掉落合体消消乐 | 5种主题 x 连击">
+    <meta property="og:title" content="Plumble — 超好玩物理合并游戏 | 5 大主题 x Combo 连锁">
     <meta property="og:description" content="充满欢乐的物理合并游戏。扔下可爱角色，碰撞合体进化，挑战你的最高分！">
     <meta property="og:image" content="https://aircon-chen.github.io/plumble/images/app-icon.png">
     <meta property="og:url" content="https://aircon-chen.github.io/plumble/zh-Hans/">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="zh_CN">
-    <meta property="og:site_name" content="Drop Merge: Smash Puzzle">
+    <meta property="og:site_name" content="Plumble">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Drop Merge: Smash Puzzle — 掉落合体消消乐">
+    <meta name="twitter:title" content="Plumble — 超好玩物理合并游戏">
     <meta name="twitter:description" content="充满欢乐的物理合并游戏。5 大主题、Combo 连锁、摇晃物理效果。">
     <meta name="twitter:image" content="https://aircon-chen.github.io/plumble/images/app-icon.png">
     <link rel="canonical" href="https://aircon-chen.github.io/plumble/zh-Hans/">
@@ -42,7 +42,7 @@
     {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": "Drop Merge: Smash Puzzle",
+        "name": "Plumble",
         "operatingSystem": "iOS",
         "applicationCategory": "GameApplication",
         "description": "扔下、碰撞、合体！充满欢乐的物理合并游戏。5 大主题、Combo 连锁、支持 14 种语言。",
@@ -194,8 +194,9 @@
             font-size: 0.85rem;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             box-shadow: 0 2px 8px rgba(191, 90, 242, 0.25);
-            cursor: default;
-            opacity: 0.7;
+            cursor: pointer;
+            opacity: 1;
+            text-decoration: none;
             pointer-events: none;
             white-space: nowrap;
         }
@@ -363,11 +364,9 @@
             height: 22px;
             fill: currentColor;
         }
-        .btn-appstore.coming-soon {
-            background: linear-gradient(135deg, #4A4A6A, #3A3A5A);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-            cursor: default;
-            pointer-events: none;
+        .btn-appstore:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(191,90,242,0.4);
         }
 
         /* ======================== */
@@ -892,14 +891,14 @@
     <nav id="navbar" aria-label="主导航">
         <div class="nav-inner">
             <a href="../index.html" class="nav-brand">
-                <img src="../images/app-icon.png" alt="Drop Merge" width="32" height="32">
-                Drop Merge
+                <img src="../images/app-icon.png" alt="Plumble" width="32" height="32">
+                Plumble
             </a>
             <ul class="nav-links">
                 <li><a href="#screenshots">截图</a></li>
                 <li><a href="#features">特色</a></li>
                 <li><a href="#themes">主题</a></li>
-                <li><span class="nav-download">即将上架</span></li>
+                <li><a href="https://apps.apple.com/tw/app/drop-merge-smash-puzzle/id6759857971" class="nav-download" target="_blank" rel="noopener noreferrer">免费下载</a></li>
                 <li class="lang-switcher">
                     <button class="lang-switcher-btn" id="langBtn" aria-label="Switch language">🌐 简体中文 ▾</button>
                     <div class="lang-dropdown" id="langDropdown"></div>
@@ -914,13 +913,13 @@
         <section class="hero anim" id="hero">
             <div class="hero-stars"></div>
             <div class="hero-content">
-                <h1>Drop Merge</h1>
+                <h1>Plumble</h1>
                 <p class="tagline">扔下、碰撞、合体！停不下来的物理合并游戏</p>
                 <p class="tagline-sub">可爱角色 x 物理碰撞 x Combo 连锁 — 你能撑到 Lv.10 大爆炸吗？</p>
                 <div class="cta-group">
-                    <a href="#" class="btn-appstore coming-soon" aria-disabled="true" tabindex="-1" role="button">
+                    <a href="https://apps.apple.com/tw/app/drop-merge-smash-puzzle/id6759857971" class="btn-appstore" target="_blank" rel="noopener noreferrer" role="button">
                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
-                        即将上架 App Store
+                        App Store 免费下载
                     </a>
                 </div>
                 <span class="hero-sub">免费游玩 · 5 大主题 · 14 种语言</span>
@@ -928,7 +927,7 @@
             <div class="hero-characters">
                 <picture>
                     <source srcset="../images/hero-characters.webp" type="image/webp">
-                    <img src="../images/hero-characters.jpg" alt="Drop Merge 游戏角色" width="1920" height="1195" fetchpriority="high">
+                    <img src="../images/hero-characters.jpg" alt="Plumble 游戏角色" width="1920" height="1195" fetchpriority="high">
                 </picture>
             </div>
         </section>
@@ -1086,10 +1085,10 @@
         <!-- Final CTA -->
         <section class="final-cta anim">
             <h2 class="section-title">准备好开始合体了吗？</h2>
-            <p class="section-subtitle">抢先关注，上架第一时间通知你</p>
-            <a href="#" class="btn-appstore coming-soon" aria-disabled="true" tabindex="-1" role="button">
+            <p class="section-subtitle">免费游玩 — 立即下载！</p>
+            <a href="https://apps.apple.com/tw/app/drop-merge-smash-puzzle/id6759857971" class="btn-appstore" target="_blank" rel="noopener noreferrer" role="button">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
-                即将上架 App Store
+                App Store 免费下载
             </a>
         </section>
 
