@@ -6,6 +6,7 @@
     <title>Plumble — 超好玩物理合併遊戲 | 5 種主題 x Combo 連鎖</title>
     <meta name="description" content="Plumble 是一款充滿歡樂的物理合併遊戲。丟下可愛角色，碰撞合體進化，挑戰你的最高分！5 種主題、Combo 連鎖、支援 14 種語言。">
     <meta name="theme-color" content="#0A0E23">
+    <meta name="apple-itunes-app" content="app-id=6759857971">
     <meta property="og:title" content="Plumble — 超好玩物理合併遊戲 | 5 種主題 x Combo 連鎖">
     <meta property="og:description" content="充滿歡樂的物理合併遊戲。丟下可愛角色，碰撞合體進化，挑戰你的最高分！">
     <meta property="og:image" content="https://aircon-chen.github.io/plumble/images/app-icon.png">
@@ -922,7 +923,7 @@
                         在 App Store 免費下載
                     </a>
                 </div>
-                <span class="hero-sub">免費遊玩 · 5 種主題 · 14 種語言</span>
+                <span class="hero-sub" style="display:inline-flex;align-items:center;gap:6px;"><span style="color:#FFD60A;letter-spacing:1px;">★★★★★</span> 免費遊玩 · 5 種主題 · 14 種語言</span>
             </div>
             <div class="hero-characters">
                 <picture>
@@ -1171,6 +1172,26 @@
         })();
 
     </script>
+<!-- Firebase Analytics -->
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import{getAnalytics,logEvent}from"https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+const app=initializeApp({apiKey:"AIzaSyAS9F4UwN0XCJWN20VDi6XGsQyH0J3pW8U",authDomain:"noflash-63553.firebaseapp.com",projectId:"noflash-63553",storageBucket:"noflash-63553.firebasestorage.app",messagingSenderId:"343175592399",appId:"1:343175592399:web:9e42783024df0922b0baba",measurementId:"G-7LXS3LBK2W"});
+const analytics=getAnalytics(app);
+window._fbLog=function(name,params){logEvent(analytics,name,params||{})};
+window._fbLog('page_view',{page:'plumble',lang:document.documentElement.lang||'zh-Hant'});
+
+let scrollMarks={25:false,50:false,75:false,100:false};
+window.addEventListener('scroll',()=>{
+    const pct=Math.round((window.scrollY/(document.body.scrollHeight-window.innerHeight))*100);
+    [25,50,75,100].forEach(m=>{if(pct>=m&&!scrollMarks[m]){scrollMarks[m]=true;window._fbLog('scroll_depth',{percent:m,page:'plumble'})}});
+},{passive:true});
+
+document.addEventListener('click',e=>{
+    const a=e.target.closest('a[href*="apps.apple.com"],a[href*="itunes.apple.com"]');
+    if(a)window._fbLog('cta_click',{label:a.textContent.trim().slice(0,50),page:'plumble'});
+});
+</script>
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "74a8ba2b053b4b4685ea06b84af714ae"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

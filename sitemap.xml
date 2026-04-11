@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main -->
+  <url><loc>https://aircon-chen.github.io/</loc><lastmod>2026-04-11</lastmod><priority>1.0</priority></url>
+
+  <!-- SightReading -->
+  <url><loc>https://aircon-chen.github.io/sightreading/</loc><lastmod>2026-04-11</lastmod><priority>0.9</priority></url>
+
+  <!-- Plumble -->
+  <url><loc>https://aircon-chen.github.io/plumble/</loc><lastmod>2026-04-11</lastmod><priority>0.9</priority></url>
+  <url><loc>https://aircon-chen.github.io/plumble/en/</loc><lastmod>2026-04-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aircon-chen.github.io/plumble/ja/</loc><lastmod>2026-04-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aircon-chen.github.io/plumble/ko/</loc><lastmod>2026-04-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://aircon-chen.github.io/plumble/es/</loc><lastmod>2026-04-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://aircon-chen.github.io/plumble/fr/</loc><lastmod>2026-04-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://aircon-chen.github.io/plumble/de/</loc><lastmod>2026-04-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://aircon-chen.github.io/plumble/it/</loc><lastmod>2026-04-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://aircon-chen.github.io/plumble/pt-BR/</loc><lastmod>2026-04-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://aircon-chen.github.io/plumble/th/</loc><lastmod>2026-04-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://aircon-chen.github.io/plumble/vi/</loc><lastmod>2026-04-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://aircon-chen.github.io/plumble/id/</loc><lastmod>2026-04-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://aircon-chen.github.io/plumble/tr/</loc><lastmod>2026-04-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://aircon-chen.github.io/plumble/zh-Hans/</loc><lastmod>2026-04-11</lastmod><priority>0.7</priority></url>
+  <url><loc>https://aircon-chen.github.io/plumble/privacy.html</loc><lastmod>2026-04-11</lastmod><priority>0.3</priority></url>
+
+  <!-- NoFlash -->
+  <url><loc>https://aircon-chen.github.io/noflash/</loc><lastmod>2026-04-11</lastmod><priority>0.9</priority></url>
+  <url><loc>https://aircon-chen.github.io/noflash/privacy.html</loc><lastmod>2026-04-11</lastmod><priority>0.3</priority></url>
+  <url><loc>https://aircon-chen.github.io/noflash/terms.html</loc><lastmod>2026-04-11</lastmod><priority>0.3</priority></url>
+</urlset>

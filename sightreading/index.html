@@ -9,6 +9,8 @@
     <meta name="apple-itunes-app" content="app-id=6743129507">
     <link rel="icon" type="image/png" href="app-icon.png">
     <link rel="canonical" href="https://aircon-chen.github.io/sightreading/">
+    <link rel="preconnect" href="https://static.cloudflareinsights.com">
+    <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
 
     <!-- hreflang for multi-language SEO -->
     <link rel="alternate" hreflang="zh-Hant" href="https://aircon-chen.github.io/sightreading/">
@@ -1208,12 +1210,13 @@
 </section>
 
 <footer>
-    <p>&copy; 2026 SightReading. All rights reserved.</p>
+    <p>&copy; 2026 Aircon Chen</p>
     <p style="margin-top: 8px;">
         <a href="https://apps.apple.com/app/id6743129507">App Store</a> &middot;
         <a href="https://play.google.com/store/apps/details?id=tw.aircon.ims">Google Play</a> &middot;
         <a href="#support"><span data-i18n="zh-Hant" class="active">支援</span><span data-i18n="zh-Hans">支持</span><span data-i18n="en">Support</span><span data-i18n="ja">サポート</span><span data-i18n="ko">지원</span><span data-i18n="es">Soporte</span><span data-i18n="fr">Support</span><span data-i18n="de">Support</span><span data-i18n="pt-BR">Suporte</span></a> &middot;
-        <a href="#privacy"><span data-i18n="zh-Hant" class="active">隱私權政策</span><span data-i18n="zh-Hans">隐私政策</span><span data-i18n="en">Privacy Policy</span><span data-i18n="ja">プライバシーポリシー</span><span data-i18n="ko">개인정보 처리방침</span><span data-i18n="es">Política de Privacidad</span><span data-i18n="fr">Politique de Confidentialité</span><span data-i18n="de">Datenschutzrichtlinie</span><span data-i18n="pt-BR">Política de Privacidade</span></a>
+        <a href="#privacy"><span data-i18n="zh-Hant" class="active">隱私權政策</span><span data-i18n="zh-Hans">隐私政策</span><span data-i18n="en">Privacy Policy</span><span data-i18n="ja">プライバシーポリシー</span><span data-i18n="ko">개인정보 처리방침</span><span data-i18n="es">Política de Privacidad</span><span data-i18n="fr">Politique de Confidentialité</span><span data-i18n="de">Datenschutzrichtlinie</span><span data-i18n="pt-BR">Política de Privacidade</span></a> &middot;
+        <a href="../"><span data-i18n="zh-Hant" class="active">返回主站</span><span data-i18n="zh-Hans">返回主站</span><span data-i18n="en">Home</span><span data-i18n="ja">ホーム</span><span data-i18n="ko">홈</span><span data-i18n="es">Inicio</span><span data-i18n="fr">Accueil</span><span data-i18n="de">Startseite</span><span data-i18n="pt-BR">Início</span></a>
     </p>
 </footer>
 
@@ -1383,6 +1386,26 @@
 </div>
 </noscript>
 
+<!-- Firebase Analytics -->
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import{getAnalytics,logEvent}from"https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+const app=initializeApp({apiKey:"AIzaSyAS9F4UwN0XCJWN20VDi6XGsQyH0J3pW8U",authDomain:"noflash-63553.firebaseapp.com",projectId:"noflash-63553",storageBucket:"noflash-63553.firebasestorage.app",messagingSenderId:"343175592399",appId:"1:343175592399:web:9e42783024df0922b0baba",measurementId:"G-7LXS3LBK2W"});
+const analytics=getAnalytics(app);
+window._fbLog=function(name,params){logEvent(analytics,name,params||{})};
+window._fbLog('page_view',{page:'sightreading'});
+
+let scrollMarks={25:false,50:false,75:false,100:false};
+window.addEventListener('scroll',()=>{
+    const pct=Math.round((window.scrollY/(document.body.scrollHeight-window.innerHeight))*100);
+    [25,50,75,100].forEach(m=>{if(pct>=m&&!scrollMarks[m]){scrollMarks[m]=true;window._fbLog('scroll_depth',{percent:m,page:'sightreading'})}});
+},{passive:true});
+
+document.addEventListener('click',e=>{
+    const a=e.target.closest('a[href*="apps.apple.com"],a[href*="play.google.com"]');
+    if(a)window._fbLog('cta_click',{label:a.textContent.trim().slice(0,50),page:'sightreading'});
+});
+</script>
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "74a8ba2b053b4b4685ea06b84af714ae"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
